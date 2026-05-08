@@ -1,45 +1,83 @@
-import { Outlet, NavLink, useParams, useNavigate } from 'react-router-dom'
-import { useState, useEffect, useRef } from 'react'
-import { getProjects } from '../services/api'
+import { Outlet, NavLink, useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { getProjects } from "../services/api";
 
 function SobhaLogo({ size = 36 }) {
-  const [imgFailed, setImgFailed] = useState(false)
+  const [imgFailed, setImgFailed] = useState(false);
   return (
-    <div style={{ width:size, height:size, borderRadius:Math.round(size*0.22), background:'#0a0a0a', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden', position:'relative' }}>
+    <div
+      style={{
+        width: size,
+        height: size,
+        borderRadius: Math.round(size * 0.22),
+        background: "#0a0a0a",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
       {!imgFailed && (
-        <img src="/sobha-logo.png" alt="Sobha"
-          style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }}
+        <img
+          src="/sobha-logo.png"
+          alt="Sobha"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
           onError={() => setImgFailed(true)}
         />
       )}
       {imgFailed && (
-        <span style={{ fontSize:Math.round(size*0.55), fontWeight:900, color:'#C9A84C', fontFamily:'Georgia,serif', lineHeight:1, userSelect:'none' }}>S</span>
+        <span
+          style={{
+            fontSize: Math.round(size * 0.55),
+            fontWeight: 900,
+            color: "#C9A84C",
+            fontFamily: "Georgia,serif",
+            lineHeight: 1,
+            userSelect: "none",
+          }}
+        >
+          S
+        </span>
       )}
     </div>
-  )
+  );
 }
 
 const NAV = [
-  { to:'dashboard',  label:'Dashboard',          icon:'◈' },
-  { to:'upload',     label:'Upload Files',        icon:'↑' },
-  { to:'rfi-log',    label:'RFI Log',             icon:'◫' },
-  { to:'categories', label:'Categories',          icon:'⊞' },
-  { to:'ai-agent',   label:'AI Agent',            icon:'◉' },
-  { to:'finetuning', label:'Fine-tuning',         icon:'⊙' },
-  { to:'team',       label:'Team & Activities',   icon:'👥' },
-]
+  { to: "dashboard", label: "Dashboard", icon: "◈" },
+  { to: "upload", label: "Upload Files", icon: "↑" },
+  { to: "rfi-log", label: "RFI Log", icon: "◫" },
+  { to: "categories", label: "Categories", icon: "⊞" },
+  { to: "ai-agent", label: "AI Agent", icon: "◉" },
+  { to: "finetuning", label: "Fine-tuning", icon: "⊙" },
+];
 
 export default function Layout() {
-  const { projectId } = useParams()
-  const navigate      = useNavigate()
-  const [project, setProject] = useState(null)
+  const { projectId } = useParams();
+  const navigate = useNavigate();
+  const [project, setProject] = useState(null);
 
   useEffect(() => {
-    getProjects().then(ps => setProject(ps.find(p => p.id === projectId)))
-  }, [projectId])
+    getProjects().then((ps) => setProject(ps.find((p) => p.id === projectId)));
+  }, [projectId]);
 
   return (
-    <div style={{ display:'flex', height:'100vh', fontFamily:"'Inter',system-ui,sans-serif", background:'#F4F6FA' }}>
+    <div
+      style={{
+        display: "flex",
+        height: "100vh",
+        fontFamily: "'Inter',system-ui,sans-serif",
+        background: "#F4F6FA",
+      }}
+    >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..800&display=swap');
         *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -88,32 +126,91 @@ export default function Layout() {
       `}</style>
 
       {/* ── Sidebar ─────────────────────────────────────────────────────────── */}
-      <aside style={{ width:242, background:'#fff', borderRight:'1px solid #E9EDF5', display:'flex', flexDirection:'column', flexShrink:0 }}>
-
+      <aside
+        style={{
+          width: 242,
+          background: "#fff",
+          borderRight: "1px solid #E9EDF5",
+          display: "flex",
+          flexDirection: "column",
+          flexShrink: 0,
+        }}
+      >
         {/* Brand */}
-        <div style={{ padding:'18px 16px 14px', borderBottom:'1px solid #F1F5F9' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+        <div
+          style={{
+            padding: "18px 16px 14px",
+            borderBottom: "1px solid #F1F5F9",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <SobhaLogo size={36} />
             <div>
-              <div style={{ fontSize:14.5, fontWeight:800, color:'#0F172A', letterSpacing:'-0.3px', lineHeight:1.2 }}>RFI Intel</div>
-              <div style={{ fontSize:11, color:'#94A3B8', marginTop:1 }}>Design Defect AI</div>
+              <div
+                style={{
+                  fontSize: 14.5,
+                  fontWeight: 800,
+                  color: "#0F172A",
+                  letterSpacing: "-0.3px",
+                  lineHeight: 1.2,
+                }}
+              >
+                RFI Intel
+              </div>
+              <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 1 }}>
+                Design Defect AI
+              </div>
             </div>
           </div>
         </div>
 
         {/* Active project chip */}
         {project && (
-          <div style={{ padding:'12px 16px', borderBottom:'1px solid #F1F5F9', background:'#FAFBFF' }}>
-            <div style={{ fontSize:10.5, color:'#94A3B8', textTransform:'uppercase', letterSpacing:'0.8px', marginBottom:4, fontWeight:600 }}>Active Project</div>
-            <div style={{ fontSize:13.5, fontWeight:700, color:'#1E293B', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{project.name}</div>
-            <div style={{ fontSize:12, color:'#94A3B8', marginTop:2 }}>{project.rfi_count ?? 0} RFIs loaded</div>
+          <div
+            style={{
+              padding: "12px 16px",
+              borderBottom: "1px solid #F1F5F9",
+              background: "#FAFBFF",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 10.5,
+                color: "#94A3B8",
+                textTransform: "uppercase",
+                letterSpacing: "0.8px",
+                marginBottom: 4,
+                fontWeight: 600,
+              }}
+            >
+              Active Project
+            </div>
+            <div
+              style={{
+                fontSize: 13.5,
+                fontWeight: 700,
+                color: "#1E293B",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {project.name}
+            </div>
+            <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 2 }}>
+              {project.rfi_count ?? 0} RFIs loaded
+            </div>
           </div>
         )}
 
         {/* Nav */}
-        <nav style={{ flex:1, padding:'10px 10px', overflowY:'auto' }}>
+        <nav style={{ flex: 1, padding: "10px 10px", overflowY: "auto" }}>
           {NAV.map(({ to, label, icon }) => (
-            <NavLink key={to} to={to} className={({ isActive }) => `snav${isActive ? ' active' : ''}`}>
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) => `snav${isActive ? " active" : ""}`}
+            >
               <span className="icon">{icon}</span>
               {label}
             </NavLink>
@@ -121,16 +218,27 @@ export default function Layout() {
         </nav>
 
         {/* Back link */}
-        <div style={{ padding:'10px', borderTop:'1px solid #F1F5F9' }}>
-          <div onClick={() => navigate('/')} className="snav" style={{ color:'#64748B' }}>
+        <div style={{ padding: "10px", borderTop: "1px solid #F1F5F9" }}>
+          <div
+            onClick={() => navigate("/")}
+            className="snav"
+            style={{ color: "#64748B" }}
+          >
             <span className="icon">←</span> All Projects
           </div>
         </div>
       </aside>
 
-      <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
         <Outlet />
       </div>
     </div>
-  )
+  );
 }
