@@ -56,6 +56,8 @@ export default function ProjectLayout({ children }) {
   const router = useRouter();
 
   const [project, setProject] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   useEffect(() => {
     if (projectId) {
       getProjects().then((ps) =>
