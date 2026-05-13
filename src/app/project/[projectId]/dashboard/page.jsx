@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getRFIs } from "../../../../services/api";
+import { getRFIs } from "@/lib/api/api";
 import {
   BarChart,
   Bar,
@@ -29,6 +29,8 @@ import {
 import KPI from "./components/KPI";
 import ConfidenceBreakdown from "./components/ConfidenceBreakdown";
 import RecentRFIsTable from "./components/RecentRFIsTable";
+
+import PageHeader from "@/components/blocks/PageHeader";
 
 export default function DashboardPage() {
   const params = useParams();
@@ -84,39 +86,33 @@ export default function DashboardPage() {
     value,
   }));
   const sevColors = {
-    Critical: "var(--color-destructive)",
-    High: "var(--color-chart-4)",
-    Medium: "var(--color-chart-3)",
-    Low: "var(--color-chart-2)",
+    Critical: "var(--destructive)",
+    High: "var(--chart-4)",
+    Medium: "var(--chart-3)",
+    Low: "var(--chart-2)",
   };
 
   return (
     <div className="flex-1 overflow-y-auto bg-muted/20 scrollbar-themed">
-      <div className="bg-card border-b border-border p-3 md:p-[12px_24px] flex items-center justify-between shrink-0">
-        <div>
-          <div className="text-base md:text-[17px] font-semibold text-foreground tracking-tight">
-            Dashboard
-          </div>
-          <div className="text-[10px] md:text-[12px] font-medium text-muted-foreground mt-0.5">
-            Live project overview — {data.total} total RFIs
-          </div>
-        </div>
-      </div>
+      <PageHeader 
+        title="Dashboard"
+        subtitle={`Live project overview — ${data.total} total RFIs`}
+      />
 
-      <div className="p-3 md:p-[18px_22px]">
+      <div className="p-4 md:p-[18px_48px]">
         {/* Alert banner */}
         {lowConf.length > 0 && (
           <div
-            onClick={() => router.push(`../rfi-log`)}
+            onClick={() => router.push(`/project/${projectId}/rfi-log`)}
             className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 rounded-xl p-2.5 md:p-[10px_16px] mb-3 md:mb-4 flex flex-col md:flex-row md:items-center gap-2 md:gap-3 cursor-pointer hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
           >
             <div className="flex items-center gap-2 md:gap-3 flex-1">
               <AlertTriangle className="text-amber-600 w-4 h-4 shrink-0" />
               <div className="flex-1">
-                <span className="text-[11px] md:text-[12.5px] text-amber-800 dark:text-amber-500 font-semibold block md:inline">
+                <span className="text-[11px] md:text-[12.5px] text-amber-800 dark:text-amber-500 font-medium block md:inline">
                   {lowConf.length} RFIs need manual review
                 </span>
-                <span className="text-[11px] md:text-[12px] text-amber-700 dark:text-amber-600 font-medium block md:inline md:mt-0 mt-0.5">
+                <span className="text-[11px] md:text-[12px] text-amber-700 dark:text-amber-600 font-normal block md:inline md:mt-0 mt-0.5">
                   {" "}
                   — AI confidence below 65%. Click to review.
                 </span>
@@ -150,7 +146,7 @@ export default function DashboardPage() {
             icon={<Clock />}
             iconColor="var(--color-chart-3)"
             borderTopColor="var(--color-chart-3)"
-            onClick={() => router.push(`../rfi-log`)}
+            onClick={() => router.push(`/project/${projectId}/rfi-log`)}
           />
           <KPI
             label="Closed"
@@ -185,7 +181,7 @@ export default function DashboardPage() {
               <div className="w-7 h-7 rounded-lg bg-primary/5 flex items-center justify-center">
                 <BarChart3 className="w-3.5 h-3.5 text-primary" />
               </div>
-              <div className="text-[12px] font-semibold text-foreground uppercase tracking-wider">
+              <div className="text-[12px] font-medium text-foreground uppercase tracking-wider">
                 Design Defect Categories
               </div>
             </div>
@@ -221,7 +217,7 @@ export default function DashboardPage() {
                         if (active && payload && payload.length) {
                           return (
                             <div className="bg-card border border-border shadow-xl rounded-lg p-3 text-[12px]">
-                              <div className="font-semibold mb-1">{payload[0].payload.name}</div>
+                              <div className="font-medium mb-1">{payload[0].payload.name}</div>
                               <div className="flex items-center gap-2 text-muted-foreground">
                                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: payload[0].color }} />
                                 <span>{payload[0].value} RFIs</span>
@@ -252,7 +248,7 @@ export default function DashboardPage() {
                 <div className="w-7 h-7 rounded-lg bg-primary/5 flex items-center justify-center">
                   <PieChartIcon className="w-3.5 h-3.5 text-primary" />
                 </div>
-                <div className="text-[12px] font-semibold text-foreground uppercase tracking-wider">
+                <div className="text-[12px] font-medium text-foreground uppercase tracking-wider">
                   By Discipline
                 </div>
               </div>
@@ -288,7 +284,7 @@ export default function DashboardPage() {
                             if (active && payload && payload.length) {
                               return (
                                 <div className="bg-card border border-border shadow-xl rounded-lg p-2 text-[11px] z-50">
-                                  <div className="font-semibold">{payload[0].name}</div>
+                                  <div className="font-medium">{payload[0].name}</div>
                                   <div className="text-muted-foreground">{payload[0].value} RFIs</div>
                                 </div>
                               );
@@ -299,10 +295,10 @@ export default function DashboardPage() {
                       </PieChart>
                     </ResponsiveContainer>
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                      <div className="text-[18px] font-bold text-foreground">
+                      <div className="text-[18px] font-semibold text-foreground">
                         {discData.reduce((acc, d) => acc + d.value, 0)}
                       </div>
-                      <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">
+                      <div className="text-[9px] text-muted-foreground uppercase font-semibold tracking-tighter">
                         Total RFIs
                       </div>
                     </div>
@@ -312,11 +308,11 @@ export default function DashboardPage() {
                       <div key={d.name} className="flex items-center justify-between group">
                         <div className="flex items-center gap-2 overflow-hidden">
                           <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: `var(--chart-${(i % 5) + 1})` }} />
-                          <span className="text-[12px] font-medium text-foreground/80 group-hover:text-foreground transition-colors truncate">
+                          <span className="text-[12px] font-normal text-foreground/80 group-hover:text-foreground transition-colors truncate">
                             {d.name}
                           </span>
                         </div>
-                        <span className="text-[11px] font-bold text-muted-foreground shrink-0 ml-2">
+                        <span className="text-[11px] font-semibold text-muted-foreground shrink-0 ml-2">
                           {Math.round((d.value / discData.reduce((acc, curr) => acc + curr.value, 0)) * 100)}%
                         </span>
                       </div>
@@ -326,7 +322,7 @@ export default function DashboardPage() {
               )}
             </div>
             <div className="card-base p-3 md:p-4 flex-1 overflow-hidden">
-              <div className="text-[12px] font-semibold text-foreground mb-2.5">
+              <div className="text-[12px] font-medium text-foreground mb-2.5">
                 By Severity
               </div>
               {sevData.length === 0 ? (
@@ -345,13 +341,13 @@ export default function DashboardPage() {
                       }}
                     >
                       <div
-                        className="text-[18px] md:text-[20px] font-semibold"
+                        className="text-[18px] md:text-[20px] font-medium"
                         style={{ color: sevColors[name] }}
                       >
                         {value}
                       </div>
                       <div
-                        className="text-[10px] font-medium"
+                        className="text-[10px] font-normal"
                         style={{ color: sevColors[name] }}
                       >
                         {name}

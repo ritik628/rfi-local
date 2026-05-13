@@ -11,14 +11,14 @@ export default function KPI({ label, value, sub, icon, iconColor, borderTopColor
       <div className="text-[20px] md:text-[24px] mb-2" style={{ color: iconColor }}>
         {icon}
       </div>
-      <div className="text-[22px] md:text-[26px] font-semibold text-foreground leading-none">
+      <div className="text-[20px] md:text-[24px] font-medium text-foreground/80 leading-none">
         {value}
       </div>
-      <div className="text-xs md:text-[13px] font-semibold text-muted-foreground mt-1">
+      <div className="text-[12px] md:text-[13px] font-normal text-muted-foreground/80 mt-1">
         {label}
       </div>
       {sub && (
-        <div className="text-[10px] md:text-[11px] font-medium text-muted-foreground/70 mt-1">{sub}</div>
+        <div className="text-[10px] md:text-[11px] font-normal text-muted-foreground/70 mt-1">{sub}</div>
       )}
     </div>
   );

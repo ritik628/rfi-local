@@ -4,7 +4,7 @@ import { CheckCircle2 } from 'lucide-react';
 export default function FileTypeSelector({ fileTypes, selectedValue, onSelect }) {
   return (
     <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-      <h2 className="text-xs font-semibold text-foreground mb-4 uppercase tracking-wider">1. Select file type</h2>
+      <h2 className="text-xs font-heading font-semibold text-foreground mb-4 uppercase tracking-wider">1. Select file type</h2>
       <div className="space-y-3">
         {fileTypes.map(ft => {
           const Icon = ft.icon;

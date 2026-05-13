@@ -10,8 +10,8 @@ import {
   importResponsePDFs, 
   getResponseImportProgress, 
   updateProject, 
-  getProjects 
-} from '../../../../services/api';
+  getProjects,
+} from '@/lib/api/api';
 import toast from 'react-hot-toast';
 import { 
   FileText, 
@@ -78,6 +78,8 @@ const MISMATCH_LABELS = {
   client:     'Client',
   contractor: 'Contractor',
 };
+
+import PageHeader from '@/components/blocks/PageHeader';
 
 export default function UploadPage() {
   const { projectId } = useParams();
@@ -292,13 +294,12 @@ export default function UploadPage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-background overflow-hidden">
-      {/* Header */}
-      <div className="px-8 py-6 border-b border-border bg-card">
-        <h1 className="text-2xl font-semibold text-foreground">Upload Files</h1>
-        <p className="text-sm text-muted-foreground mt-1">Upload RFI log Excel files or consultant response PDFs</p>
-      </div>
+      <PageHeader 
+        title="Upload Files"
+        subtitle="Upload RFI log Excel files or consultant response PDFs"
+      />
 
-      <div className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-themed">
+      <div className="flex-1 overflow-y-auto p-4 md:p-12 scrollbar-themed">
         <div className={`max-w-[1400px] mx-auto grid gap-8 ${showPreview ? 'lg:grid-cols-[400px,1fr] grid-cols-1' : 'grid-cols-1 max-w-[800px]'}`}>
           
           {/* Left Column: Configuration and Upload */}
@@ -326,10 +327,10 @@ export default function UploadPage() {
                   >
                     <input {...getPdfInput()} />
                     <FileUp className={`w-10 h-10 mx-auto mb-4 ${isDragPdf ? 'text-primary' : 'text-muted-foreground'}`} />
-                    <div className="text-sm font-semibold text-foreground mb-1">
+                    <div className="text-[14px] font-semibold text-foreground mb-1">
                       {isDragPdf ? 'Drop RFI PDFs here' : 'Drag & drop RFI PDFs, or click'}
                     </div>
-                    <p className="text-xs text-muted-foreground">Multiple PDFs supported</p>
+                    <p className="text-[12px] text-muted-foreground">Multiple PDFs supported</p>
                   </div>
 
                   {pdfFiles.length > 0 && !importing && !importDone && (
@@ -473,7 +474,7 @@ export default function UploadPage() {
               <h3 className="text-xs font-semibold text-primary uppercase tracking-widest flex items-center gap-2">
                 <Info className="w-4 h-4" /> Guidelines
               </h3>
-              <div className="text-xs text-foreground/70 space-y-2 leading-relaxed">
+              <div className="text-[12px] text-foreground/70 space-y-2 leading-relaxed">
                 {isPdfMode ? (
                   <ul className="list-disc pl-4 space-y-1">
                     <li>Supports <strong>PlanGrid RFI Export</strong> PDFs only.</li>

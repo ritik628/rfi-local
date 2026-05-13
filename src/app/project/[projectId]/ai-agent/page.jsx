@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { aiChat } from '../../../../services/api';
+import { aiChat } from '@/lib/api/api';
 import toast from 'react-hot-toast';
 import { 
   Send, 
@@ -23,7 +23,7 @@ import {
   ChevronDown,
   Info
 } from 'lucide-react';
-import SobhaLogo from '../../../../components/ui/SobhaLogo';
+import SobhaLogo from '@/components/ui/SobhaLogo';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -76,9 +76,9 @@ function MarkdownContent({ content, isUser }) {
     <ReactMarkdown 
       remarkPlugins={[remarkGfm]}
       components={{
-        h1: ({node, ...props}) => <h1 className={`text-xl font-semibold mt-6 mb-3 border-b pb-1.5 border-current ${isUser ? 'text-white' : 'text-foreground/80'}`} {...props} />,
-        h2: ({node, ...props}) => <h2 className={`text-lg font-semibold mt-5 mb-2.5 border-b pb-1 border-current ${isUser ? 'text-white' : 'text-foreground/80'}`} {...props} />,
-        h3: ({node, ...props}) => <h3 className={`text-[14.5px] md:text-[15.5px] font-semibold mt-5 mb-2.5 flex items-center gap-2 ${isUser ? 'text-inherit' : 'text-foreground/80'}`} {...props} />,
+        h1: ({node, ...props}) => <h1 className={`text-[16px] font-bold mt-6 mb-3 border-b pb-1.5 border-current ${isUser ? 'text-white' : 'text-foreground/80'}`} {...props} />,
+        h2: ({node, ...props}) => <h2 className={`text-[14px] font-semibold mt-5 mb-2.5 border-b pb-1 border-current ${isUser ? 'text-white' : 'text-foreground/80'}`} {...props} />,
+        h3: ({node, ...props}) => <h3 className={`text-[13px] font-semibold mt-5 mb-2.5 flex items-center gap-2 ${isUser ? 'text-inherit' : 'text-foreground/80'}`} {...props} />,
         p: ({node, ...props}) => <p className={`mb-3 last:mb-0 leading-relaxed ${isUser ? 'text-white/90' : 'text-foreground/70'}`} {...props} />,
         ul: ({node, ...props}) => <ul className="list-disc ml-5 mb-3 space-y-1" {...props} />,
         ol: ({node, ...props}) => <ol className="list-decimal ml-5 mb-3 space-y-1" {...props} />,
@@ -95,10 +95,10 @@ function MarkdownContent({ content, isUser }) {
         ),
         thead: ({node, ...props}) => <thead className={isUser ? 'bg-white/10' : 'bg-muted/60'} {...props} />,
         th: ({node, ...props}) => (
-          <th className={`px-4 py-2.5 text-[9px] md:text-[10px] font-bold uppercase tracking-widest border ${isUser ? 'text-white/70 border-white/10' : 'text-muted-foreground border-border'}`} {...props} />
+          <th className={`px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider border ${isUser ? 'text-white/70 border-white/10' : 'text-muted-foreground border-border'}`} {...props} />
         ),
         td: ({node, ...props}) => (
-          <td className={`px-4 py-3 text-[12px] md:text-[13px] font-medium leading-relaxed border ${isUser ? 'border-white/5 text-white/90' : 'border-border/50 text-foreground/80'}`} {...props} />
+          <td className={`px-4 py-3 text-[11px] md:text-[12px] font-normal leading-relaxed border ${isUser ? 'border-white/5 text-white/90' : 'border-border/50 text-foreground/80'}`} {...props} />
         ),
         tr: ({node, ...props}) => (
           <tr className={`transition-colors ${isUser ? 'hover:bg-white/5' : 'hover:bg-muted/10'}`} {...props} />
@@ -122,6 +122,8 @@ const INIT_MSG = {
   role: 'assistant',
   content: "👋 I'm your RFI Intelligence Agent, powered by Sobha's design defect data.\n\nI have full context on all your project's classified RFIs — categories, disciplines, severity distribution, and more.\n\nAsk me about patterns, risk priorities, recurring issues, or what process changes would reduce design defects. Use the quick prompts or type your own question."
 };
+
+import PageHeader from '@/components/blocks/PageHeader';
 
 export default function AIAgentPage() {
   const { projectId } = useParams();
@@ -236,42 +238,36 @@ export default function AIAgentPage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-background overflow-hidden relative">
-      
-      {/* Header */}
-      <div className="px-4 md:px-6 py-3 md:py-4 border-b border-border bg-card flex items-center justify-between shrink-0 shadow-sm z-10">
-        <div className="flex items-center gap-3">
-          <div className="shrink-0 scale-90 md:scale-100">
-            <AIAvatar />
-          </div>
-          <div>
-            <h1 className="text-base md:text-xl font-semibold text-foreground flex items-center gap-2">
-              AI Agent
-              <span className="text-[8px] md:text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                V5.4
-              </span>
-            </h1>
-            <p className="text-[10px] md:text-[12px] text-muted-foreground mt-0.5 font-medium truncate max-w-[150px] sm:max-w-none">Design Defect Intelligence</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 md:gap-4">
-          <div className="hidden sm:flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1 md:px-4 md:py-1.5 rounded-full border border-emerald-100 text-[10px] md:text-[11px] font-bold">
-            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-            GPT-5.4 Active
-          </div>
-          <button 
-            onClick={clearHistory}
-            className="flex items-center gap-2 bg-card border border-border px-3 py-2 rounded-xl text-[10px] md:text-xs font-bold text-destructive hover:bg-destructive/5 transition-colors shadow-sm shrink-0"
-          >
-            <Trash2 className="w-3.5 h-3.5" /> <span className="hidden xs:inline">Clear</span>
-          </button>
-        </div>
-      </div>
+      <PageHeader 
+        title="AI Agent"
+        subtitle="Design Defect Intelligence"
+        icon={<AIAvatar />}
+        badge={
+          <span className="text-[11px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+            V5.4
+          </span>
+        }
+        actions={
+          <>
+            <div className="hidden sm:flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1 md:px-4 md:py-1.5 rounded-full border border-emerald-100 text-[11px] font-semibold">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              GPT-5.4 Active
+            </div>
+            <button 
+              onClick={clearHistory}
+              className="flex items-center gap-2 bg-card border border-border px-3 py-2 rounded-xl text-sm font-semibold text-destructive hover:bg-destructive/5 transition-colors shadow-sm shrink-0"
+            >
+              <Trash2 className="w-3.5 h-3.5" /> <span className="hidden xs:inline">Clear</span>
+            </button>
+          </>
+        }
+      />
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col min-h-0 relative">
         
         {/* Messages Scroll Area */}
-        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-8 scrollbar-themed space-y-6 md:space-y-8">
+        <div className="flex-1 overflow-y-auto px-4 md:px-12 py-6 md:py-8 scrollbar-themed space-y-6 md:space-y-8">
           <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
             {messages.map((m, i) => (
               <div 
@@ -283,7 +279,7 @@ export default function AIAgentPage() {
                 </div>
                 <div className={`flex flex-col max-w-[88%] md:max-w-[85%] ${m.role === 'user' ? 'items-end' : 'items-start'} min-w-0`}>
                   <div className={`
-                    p-3 md:p-4 rounded-xl text-[12.5px] md:text-[13.5px] leading-[1.6] shadow-sm w-full
+                    p-3 md:p-4 rounded-xl text-sm leading-relaxed shadow-sm w-full
                     ${m.role === 'user' 
                       ? 'bg-foreground text-background font-medium rounded-tr-none' 
                       : 'bg-card border border-border text-foreground rounded-tl-none'
@@ -293,7 +289,7 @@ export default function AIAgentPage() {
                       <MarkdownContent content={m.content} isUser={m.role === 'user'} />
                     </div>
                   </div>
-                  <span className="text-[8px] md:text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-1.5 px-1">
+                  <span className="text-[11px] font-normal text-muted-foreground uppercase tracking-wider mt-1.5 px-1">
                     {m.role === 'user' ? 'YOU' : 'AI'} • {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
@@ -321,7 +317,7 @@ export default function AIAgentPage() {
         </div>
 
         {/* Input & Control Section */}
-        <div className="shrink-0 bg-background border-t border-border p-4 md:p-8 pt-4 md:pt-6">
+        <div className="shrink-0 bg-background border-t border-border p-4 md:p-[24px_48px] pt-4 md:pt-6">
           <div className="max-w-4xl mx-auto space-y-4 md:space-y-6">
             
             {/* Quick Prompts - Responsive: Dropdown for Mobile, Buttons for Desktop */}
@@ -389,7 +385,7 @@ export default function AIAgentPage() {
               <div className="absolute inset-0 bg-primary/5 blur-xl group-focus-within:bg-primary/10 transition-all rounded-3xl -z-10" />
               <div className="bg-card border border-border group-focus-within:border-primary/40 rounded-xl p-1 md:p-1.5 flex items-center gap-2 md:gap-3 transition-all shadow-xl shadow-foreground/5">
                 <input 
-                  className="flex-1 bg-transparent border-none outline-none px-2.5 md:px-3 py-2 md:py-2.5 text-[13px] md:text-[14px] font-medium text-foreground placeholder:text-muted-foreground/60 min-w-0"
+                  className="flex-1 bg-transparent border-none outline-none px-2.5 md:px-3 py-2 md:py-2.5 text-[13px] font-medium text-foreground placeholder:text-muted-foreground/60 min-w-0"
                   placeholder="Ask about design defects..."
                   value={input} 
                   onChange={e => setInput(e.target.value)} 

@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import { addDiscipline, deleteDiscipline, getDisciplines } from '../../../../../services/api';
+import { addDiscipline, deleteDiscipline, getDisciplines } from '@/lib/api/api';
 import toast from 'react-hot-toast';
 
 const DEFAULT_DISC = ['Civil','MEP','Façade','Structure','Landscape','Architecture','Interior Design'];

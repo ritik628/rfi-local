@@ -11,11 +11,12 @@ import {
   reclassifyBatch,
   getClassifyProgress, 
   updateRFI, 
-  exportExcel, 
   addExample, 
   getCategories,
-  getDisciplines
-} from '../../../../services/api';
+  getDisciplines,
+  addDiscipline,
+  deleteDiscipline,
+} from '@/lib/api/api';
 import toast from 'react-hot-toast';
 import { 
   Search, 
@@ -32,9 +33,11 @@ import RFITable from './components/RFITable';
 
 const DEFAULT_DISC = ['Civil','MEP','Façade','Structure','Landscape','Architecture','Interior Design'];
 const SEVERITIES = ['Critical','High','Medium','Low'];
-const SEV_COLOR = { Critical:'text-destructive', High:'text-orange-600', Medium:'text-amber-600', Low:'text-emerald-600' };
-const SEV_BG = { Critical:'bg-destructive/10', High:'bg-orange-50', Medium:'bg-amber-50', Low:'bg-emerald-50' };
-const SEV_BORDER = { Critical:'border-destructive/20', High:'border-orange-200', Medium:'border-amber-200', Low:'border-emerald-200' };
+const SEV_COLOR = { Critical:'text-rose-700 dark:text-rose-400', High:'text-orange-700 dark:text-orange-400', Medium:'text-blue-700 dark:text-blue-400', Low:'text-emerald-700 dark:text-emerald-400' };
+const SEV_BG = { Critical:'bg-rose-100 dark:bg-rose-950/30', High:'bg-orange-100 dark:bg-orange-950/30', Medium:'bg-blue-100 dark:bg-blue-950/30', Low:'bg-emerald-100 dark:bg-emerald-950/30' };
+const SEV_BORDER = { Critical:'border-rose-200 dark:border-rose-900/50', High:'border-orange-200 dark:border-orange-900/50', Medium:'border-blue-200 dark:border-blue-900/50', Low:'border-emerald-200 dark:border-emerald-900/50' };
+
+import PageHeader from '@/components/blocks/PageHeader';
 
 export default function RFILogPage() {
   const { projectId } = useParams();
@@ -181,36 +184,37 @@ export default function RFILogPage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-background overflow-hidden relative">
-      {/* Header */}
-      <div className="px-4 md:px-8 py-4 md:py-6 border-b border-border bg-card flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-4">
-        <div>
-          <h1 className="text-xl md:text-2xl font-semibold text-foreground">RFI Log</h1>
-          <p className="text-xs md:text-sm text-muted-foreground mt-1 font-medium">
-            {data.total} total RFIs &bull; <span className="font-bold text-amber-600">{unclassifiedCount} pending</span>
-          </p>
-        </div>
-        <div className="flex items-center gap-2 md:gap-3">
-          <button 
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-card border border-border px-3 py-2 rounded-xl text-[11px] md:text-sm font-bold text-foreground hover:bg-muted/50 transition-colors shadow-sm"
-            onClick={() => exportExcel(projectId)}
-          >
-            <Download className="w-3.5 h-3.5" /> Export
-          </button>
-          <button 
-            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-[11px] md:text-sm font-bold shadow-sm transition-all ${
-              bulkRunning ? 'bg-muted text-muted-foreground' : 'bg-primary text-white hover:opacity-90'
-            }`}
-            onClick={bulkClassify} 
-            disabled={bulkRunning}
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${bulkRunning ? 'animate-spin' : ''}`} />
-            {bulkRunning ? 'Running...' : 'Classify All'}
-          </button>
-        </div>
-      </div>
+      <PageHeader 
+        title="RFI Log"
+        subtitle={
+          <>
+            {data.total} total RFIs &bull; <span className="font-semibold text-amber-600">{unclassifiedCount} pending</span>
+          </>
+        }
+        actions={
+          <>
+            <button 
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-card border border-border px-3 py-2 rounded-xl text-[11px] md:text-sm font-medium text-foreground hover:bg-muted/50 transition-colors shadow-sm"
+              onClick={() => exportExcel(projectId)}
+            >
+              <Download className="w-3.5 h-3.5" /> Export
+            </button>
+            <button 
+              className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-[11px] md:text-sm font-medium shadow-sm transition-all ${
+                bulkRunning ? 'bg-muted text-muted-foreground' : 'bg-primary text-white hover:opacity-90'
+              }`}
+              onClick={bulkClassify} 
+              disabled={bulkRunning}
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${bulkRunning ? 'animate-spin' : ''}`} />
+              {bulkRunning ? 'Running...' : 'Classify All'}
+            </button>
+          </>
+        }
+      />
 
       {/* Filter Bar */}
-      <div className="px-4 md:px-8 py-3 border-b border-border bg-muted/10 flex flex-wrap items-center gap-2 md:gap-3 shrink-0">
+      <div className="px-4 md:px-12 py-3 border-b border-border bg-muted/10 flex flex-wrap items-center gap-2 md:gap-3 shrink-0">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <input 
@@ -249,29 +253,29 @@ export default function RFILogPage() {
           <option value="medium">Medium (65-84%)</option>
           <option value="low">Low (&lt;65%)</option>
         </select>
-        <div className="hidden sm:block ml-auto text-[11px] font-black text-muted-foreground uppercase tracking-widest">
+        <div className="hidden sm:block ml-auto text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">
           {data.total} RFIs LOADED
         </div>
       </div>
 
       {/* Table Container */}
-      <div className="flex-1 flex min-h-0">
+      <div className="flex-1 flex min-h-0 px-4 md:px-12">
         <div className="flex-1 flex flex-col min-w-0">
           
           {/* Batch Action Bar */}
           {selectedIds.size > 0 && (
             <div className="bg-primary px-8 py-2.5 flex items-center gap-4 text-white animate-in slide-in-from-top duration-200">
-              <span className="text-sm font-bold tracking-tight">{selectedIds.size} RFIs selected</span>
+              <span className="text-sm font-medium tracking-tight">{selectedIds.size} RFIs selected</span>
               <button 
                 onClick={handleBatchReclassify} 
                 disabled={bulkRunning}
-                className="bg-white text-primary px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest hover:opacity-90 disabled:opacity-50"
+                className="bg-white text-primary px-4 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-widest hover:opacity-90 disabled:opacity-50"
               >
                 Reclassify Selected
               </button>
               <button 
                 onClick={() => setSelectedIds(new Set())}
-                className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 hover:opacity-100"
+                className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-80 hover:opacity-100"
               >
                 Clear selection
               </button>
@@ -301,7 +305,7 @@ export default function RFILogPage() {
 
         {/* Pagination Footer */}
         <div className="absolute bottom-0 left-0 right-0 px-8 py-4 bg-card border-t border-border flex items-center justify-between shadow-[0_-4px_12px_rgba(0,0,0,0.02)]">
-          <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
+          <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest">
             SHOWING {(page-1)*50+1}–{Math.min(page*50, data.total)} OF {data.total} RFIs
           </div>
           <div className="flex items-center gap-2">
@@ -321,7 +325,7 @@ export default function RFILogPage() {
                   <button 
                     key={pg} 
                     onClick={() => setPage(pg)}
-                    className={`w-9 h-9 rounded-xl text-xs font-black transition-all border ${
+                    className={`w-9 h-9 rounded-xl text-xs font-semibold transition-all border ${
                       pg === page 
                         ? 'bg-foreground text-background border-foreground shadow-sm' 
                         : 'bg-card border-border hover:border-border/80 text-muted-foreground'

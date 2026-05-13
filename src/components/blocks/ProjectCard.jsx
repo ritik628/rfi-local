@@ -16,22 +16,22 @@ export default function ProjectCard({ project, onDeleteClick }) {
         
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2 mb-1">
-            <div className="text-[16px] font-medium text-foreground tracking-tight truncate">{project.name}</div>
+            <div className="text-sm font-semibold text-foreground tracking-tight truncate">{project.name}</div>
             {project.description && (
-              <div className="text-[13px] text-muted-foreground truncate">
+              <div className="text-xs text-muted-foreground truncate">
                 &mdash; {project.description}
               </div>
             )}
           </div>
           
-          <div className="flex items-center gap-3 text-[13px] text-muted-foreground">
-            <span className="inline-flex items-center bg-primary/10 text-primary text-[11px] font-medium px-2 py-0.5 rounded-full border border-primary/20">
+          <div className="flex items-center gap-3 text-[11px] text-muted-foreground font-medium uppercase tracking-tight">
+            <span className="inline-flex items-center bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full border border-primary/20 uppercase tracking-wider">
               {project.rfi_count ?? 0} RFIs
             </span>
             {project.client && <span className="truncate max-w-[150px]">Client: <span className="text-foreground">{project.client}</span></span>}
             {project.consultant && <span className="truncate max-w-[150px]">Consultant: <span className="text-foreground">{project.consultant}</span></span>}
             <span className="text-muted-foreground/40 shrink-0">•</span>
-            <span className="shrink-0">{new Date(project.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })}</span>
+            <span className="shrink-0 font-normal normal-case">{new Date(project.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })}</span>
           </div>
         </div>
       </div>

@@ -50,10 +50,10 @@ export default function CreateProjectModal({
         {step === 'idle' && (
           <>
             <div className="mb-7">
-              <div className="text-[23px] font-semibold text-foreground tracking-tight mb-2">
+              <div className="text-[20px] font-semibold text-foreground tracking-tight mb-2">
                 New Project Workspace
               </div>
-              <div className="text-[15px] text-muted-foreground">
+              <div className="text-[14px] text-muted-foreground">
                 Isolated RFI data, categories, and AI memory per project
               </div>
             </div>
@@ -67,9 +67,9 @@ export default function CreateProjectModal({
                 ['Contractor',     'contractor',  'e.g. Sobha Constructions'],
               ].map(([label, key, ph, req]) => (
                 <div key={key}>
-                  <label className="block text-[13.5px] font-medium text-muted-foreground mb-2">{label}</label>
+                  <label className="block text-[13px] font-medium text-muted-foreground mb-2">{label}</label>
                   <input
-                    className="w-full bg-input/10 border border-input rounded-lg px-4 py-3 text-[15px] text-foreground outline-none transition-all focus:border-primary focus:ring-1 focus:ring-ring placeholder-muted-foreground"
+                    className="w-full bg-input/10 border border-input rounded-lg px-4 py-3 text-[14px] text-foreground outline-none transition-all focus:border-primary focus:ring-1 focus:ring-ring placeholder-muted-foreground"
                     placeholder={ph}
                     value={form[key]}
                     onChange={e => setForm(f => ({ ...f, [key]:e.target.value }))}
