@@ -4,7 +4,7 @@ import { CheckCircle2 } from 'lucide-react';
 export default function FileTypeSelector({ fileTypes, selectedValue, onSelect }) {
   return (
     <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-      <h2 className="text-xs font-heading font-semibold text-foreground mb-4 uppercase tracking-wider">1. Select file type</h2>
+      <h2 className="text-xs font-heading font-medium text-foreground mb-4 uppercase tracking-wider">1. Select file type</h2>
       <div className="space-y-3">
         {fileTypes.map(ft => {
           const Icon = ft.icon;
@@ -34,11 +34,11 @@ export default function FileTypeSelector({ fileTypes, selectedValue, onSelect })
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className={`text-sm font-semibold tracking-tight ${isSelected ? 'text-primary' : 'text-foreground'}`}>
+                    <span className={`text-sm font-medium tracking-tight ${isSelected ? 'text-primary' : 'text-foreground'}`}>
                       {ft.label}
                     </span>
                     {ft.multi && (
-                      <span className="text-[10px] bg-primary text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">
+                      <span className="text-[10px] bg-primary text-white px-2 py-0.5 rounded-full font-medium uppercase tracking-tighter">
                         Bulk
                       </span>
                     )}
@@ -49,7 +49,7 @@ export default function FileTypeSelector({ fileTypes, selectedValue, onSelect })
                     </div>
                   )}
                 </div>
-                <p className={`text-xs mt-1.5 leading-relaxed font-medium transition-colors ${
+                <p className={`text-xs mt-1.5 leading-relaxed font-normal transition-colors ${
                   isSelected ? 'text-foreground/80' : 'text-muted-foreground'
                 }`}>
                   {ft.desc}

@@ -50,7 +50,7 @@ export default function DisciplineModal({ projectId, disciplines, onUpdate, onCl
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-sm p-6 animate-in fade-in slide-in-from-bottom-4 duration-200">
-        <h2 className="text-lg font-bold text-foreground mb-1">Manage Disciplines</h2>
+        <h2 className="text-lg font-medium text-foreground mb-1">Manage Disciplines</h2>
         <p className="text-xs text-muted-foreground mb-6">Configure project-specific disciplines for RFI sorting</p>
 
         <div className="space-y-2 mb-6 max-h-60 overflow-y-auto scrollbar-themed pr-2">
@@ -59,7 +59,7 @@ export default function DisciplineModal({ projectId, disciplines, onUpdate, onCl
               <p className="text-xs text-muted-foreground mb-4">No disciplines configured</p>
               <button 
                 onClick={loadDefaults} 
-                className="text-xs font-bold text-primary hover:underline"
+                className="text-xs font-medium text-primary hover:underline"
                 disabled={loading}
               >
                 {loading ? 'Processing...' : 'Load Standard Defaults'}
@@ -68,7 +68,7 @@ export default function DisciplineModal({ projectId, disciplines, onUpdate, onCl
           ) : (
             disciplines.map(d => (
               <div key={d.id} className="flex items-center justify-between p-3 bg-muted/40 border border-border rounded-xl">
-                <span className="text-sm font-semibold text-foreground">{d.name}</span>
+                <span className="text-sm font-medium text-foreground">{d.name}</span>
                 <button onClick={() => handleDelete(d)} className="text-muted-foreground hover:text-destructive p-1">
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -86,7 +86,7 @@ export default function DisciplineModal({ projectId, disciplines, onUpdate, onCl
             onKeyDown={e => e.key === 'Enter' && handleAdd()} 
           />
           <button 
-            className="bg-primary text-white font-bold px-4 py-2 rounded-xl text-sm hover:opacity-90 disabled:opacity-50"
+            className="bg-primary text-white font-medium px-4 py-2 rounded-xl text-sm hover:opacity-90 disabled:opacity-50"
             onClick={handleAdd}
             disabled={loading || !newName.trim()}
           >
@@ -96,7 +96,7 @@ export default function DisciplineModal({ projectId, disciplines, onUpdate, onCl
 
         <button 
           onClick={onClose} 
-          className="w-full bg-muted border border-border text-foreground font-bold py-2 rounded-xl text-sm hover:bg-muted/80"
+          className="w-full bg-muted border border-border text-foreground font-medium py-2 rounded-xl text-sm hover:bg-muted/80"
         >
           Close
         </button>

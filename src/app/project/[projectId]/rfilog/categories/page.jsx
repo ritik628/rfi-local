@@ -25,7 +25,22 @@ export default function CategoriesPage() {
   const loadData = async () => {
     try {
       const data = await getCategories();
-      setCats(data);
+      
+      // Deep sort: Categories -> Subcategories -> Items
+      const sorted = [...data].sort((a, b) => (parseFloat(a.no) || 0) - (parseFloat(b.no) || 0));
+      
+      sorted.forEach(cat => {
+        if (cat.subcategories) {
+          cat.subcategories.sort((a, b) => (parseFloat(a.no) || 0) - (parseFloat(b.no) || 0));
+          cat.subcategories.forEach(sub => {
+            if (sub.items) {
+              sub.items.sort((a, b) => (parseFloat(a.no) || 0) - (parseFloat(b.no) || 0));
+            }
+          });
+        }
+      });
+
+      setCats(sorted);
     } catch (error) {
       console.error("Failed to load categories:", error);
       toast.error("Failed to load categories");
@@ -150,27 +165,27 @@ export default function CategoriesPage() {
       <div className="flex-1 overflow-y-auto scrollbar-themed p-4 md:p-[24px_48px]">
         <div className="max-w-7xl mx-auto">
           {/* Info Banner */}
-          <div className="bg-primary/5 border border-primary/10 rounded-2xl p-4 mb-6 flex items-start gap-3">
+          <div className="bg-card border border-border shadow-sm rounded-2xl p-5 mb-8 flex items-start gap-4 max-w-4xl mx-auto">
             <div className="p-2 bg-primary/5 rounded-xl">
               <Info className="w-5 h-5 text-primary/70" />
             </div>
             <div className="flex-1">
-              <h4 className="text-sm font-semibold text-primary/80 mb-1 uppercase tracking-tight">Understanding Hierarchies</h4>
+              <h4 className="text-sm font-medium text-primary/80 mb-1 uppercase tracking-tight">Understanding Hierarchies</h4>
               <p className="text-[13px] text-foreground/60 leading-relaxed">
-                The AI classifies each RFI through a three-level hierarchy: <strong>Design Defect Category</strong> → <strong>Specific Level Category</strong> → <strong>Sub-level Item</strong>. 
+                The AI classifies each RFI through a three-level hierarchy: <span className="font-medium text-foreground">Design Defect Category</span> → <span className="font-medium text-foreground">Specific Level Category</span> → <span className="font-medium text-foreground">Sub-level Item</span>. 
                 Managing these correctly ensures high-accuracy AI classification.
               </p>
             </div>
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
-              {[1, 2, 3, 4].map(i => (
+            <div className="flex flex-col gap-4 max-w-4xl mx-auto w-full animate-pulse">
+              {[1, 2, 3].map(i => (
                 <div key={i} className="h-40 bg-card/50 border border-border rounded-xl" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+            <div className="flex flex-col gap-6 max-w-4xl mx-auto w-full">
               {cats.map((cat, idx) => (
                 <CategoryCard
                   key={cat.id}
@@ -189,17 +204,17 @@ export default function CategoriesPage() {
           )}
 
           {!loading && cats.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 bg-card border border-dashed border-border rounded-3xl text-center px-10">
+            <div className="flex flex-col items-center justify-center py-20 bg-card border border-dashed border-border rounded-3xl text-center px-10 max-w-4xl mx-auto">
               <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mb-4">
                 <Info className="w-8 h-8 text-muted-foreground/40" />
               </div>
-              <h3 className="text-[17px] font-bold text-foreground mb-2">No categories found</h3>
+              <h3 className="text-[17px] font-medium text-foreground mb-2">No categories found</h3>
               <p className="text-muted-foreground text-[14px] max-w-sm mb-6">
                 Start by adding your first design defect category to enable AI classification.
               </p>
               <button 
                 onClick={() => openModal("addCat")}
-                className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all"
+                className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-medium shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all"
               >
                 Add Your First Category
               </button>

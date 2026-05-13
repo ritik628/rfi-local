@@ -20,7 +20,7 @@ export default function PageHeader({
         )}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h1 className="text-base font-heading font-semibold text-foreground tracking-tight truncate">
+            <h1 className="text-base font-heading font-medium text-foreground tracking-tight truncate">
               {title}
             </h1>
             {badge && (

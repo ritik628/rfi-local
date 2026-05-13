@@ -85,11 +85,12 @@ export default function AppSidebar({ project, projectId }) {
       {/* Nav */}
       <nav className="flex-1 p-[12px_12px] overflow-y-auto flex flex-col gap-1 scrollbar-themed">
         {NAV.map(({ to, label, icon }) => {
-          const isActive = pathname === `/project/${projectId}/${to}` || pathname?.startsWith(`/project/${projectId}/${to}/`);
+          const path = `/project/${projectId}/rfilog/${to}`;
+          const isActive = pathname === path || pathname?.startsWith(`${path}/`);
           return (
             <Link
               key={to}
-              href={`/project/${projectId}/${to}`}
+              href={path}
               className={`flex items-center gap-[12px] p-[9px_12px] rounded-[10px] text-sm font-medium transition-all duration-200 ${
                 isActive
                   ? "bg-white/10 text-white"
@@ -108,7 +109,7 @@ export default function AppSidebar({ project, projectId }) {
       {/* Back link */}
       <div className="p-3 border-t border-white/5 shrink-0">
         <button
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/projects")}
           className="flex w-full items-center gap-[12px] p-[10px_12px] rounded-[10px] text-sm font-medium text-white/50 hover:bg-white/5 hover:text-white transition-all"
         >
           <ArrowLeft className="w-[18px] h-[18px] shrink-0 opacity-40" />

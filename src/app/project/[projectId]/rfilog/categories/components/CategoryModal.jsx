@@ -39,7 +39,7 @@ export default function CategoryModal({
 
         <div className="p-6 space-y-4">
           <div>
-            <label className="block text-[12px] font-medium text-foreground/60 uppercase tracking-wider mb-1.5 ml-1">
+            <label className="block text-[13px] font-medium text-foreground/60 uppercase tracking-wider mb-1.5 ml-1">
               {isCat ? "Category No *" : isSub ? "Subcategory No *" : "Item No *"}
             </label>
             <input
@@ -52,7 +52,7 @@ export default function CategoryModal({
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium text-foreground/60 uppercase tracking-wider mb-1.5 ml-1">
+            <label className="block text-[13px] font-medium text-foreground/60 uppercase tracking-wider mb-1.5 ml-1">
               {isCat ? "Category Name *" : isSub ? "Subcategory Name *" : "Item Name *"}
             </label>
             <input
@@ -65,7 +65,7 @@ export default function CategoryModal({
 
           {isCat && (
             <div>
-              <label className="block text-[12px] font-medium text-foreground/60 uppercase tracking-wider mb-1.5 ml-1">
+              <label className="block text-[13px] font-medium text-foreground/60 uppercase tracking-wider mb-1.5 ml-1">
                 Description
               </label>
               <textarea
@@ -80,7 +80,7 @@ export default function CategoryModal({
 
           {(type === "addCat" || type === "addItem") && (
             <div>
-              <label className="block text-[12px] font-medium text-foreground/60 uppercase tracking-wider mb-1.5 ml-1">
+              <label className="block text-[13px] font-medium text-foreground/60 uppercase tracking-wider mb-1.5 ml-1">
                 Added By
               </label>
               <input
@@ -96,17 +96,17 @@ export default function CategoryModal({
         <div className="p-4 bg-muted/10 border-t border-border flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground hover:bg-muted transition-colors"
+            className="flex-1 px-4 py-2.5 rounded-xl text-[13px] font-normal text-foreground/60 border border-border transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={onSave}
             disabled={saving}
-            className="flex-[2] bg-primary/90 text-primary-foreground px-4 py-2.5 rounded-xl text-sm font-medium shadow-sm hover:bg-primary disabled:opacity-50 transition-all flex items-center justify-center"
+            className="flex-[2] bg-foreground text-background px-4 py-2.5 rounded-xl text-[13px] font-medium shadow-sm disabled:opacity-50 transition-all flex items-center justify-center"
           >
             {saving ? (
-              <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />
             ) : (
               "Save Changes"
             )}

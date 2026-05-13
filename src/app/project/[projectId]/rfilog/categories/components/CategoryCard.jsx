@@ -20,17 +20,17 @@ export default function CategoryCard({
   return (
     <div className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-sm transition-all h-fit">
       {/* Category Header */}
-      <div className="p-4 flex items-start gap-3">
+      <div className="p-4 flex items-center gap-3">
         <div 
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex-1 flex gap-3 cursor-pointer group"
+          className="flex-1 flex items-center gap-3 cursor-pointer group"
         >
           <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-border/60 bg-muted/30 group-hover:bg-primary/5 group-hover:border-primary/10 transition-colors">
-            <span className="font-mono text-[13px] font-medium text-foreground/60 group-hover:text-primary transition-colors">{category.no}</span>
+            <span className="text-[13px] font-medium text-foreground/60 group-hover:text-primary transition-colors">{category.no}</span>
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+              <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                 {category.name}
               </span>
               {category.is_custom && (
@@ -50,7 +50,7 @@ export default function CategoryCard({
               <span>{totalItems} items</span>
             </div>
           </div>
-          <div className="shrink-0 mt-1">
+          <div className="shrink-0">
             {isExpanded ? (
               <ChevronDown className="w-4 h-4 text-muted-foreground" />
             ) : (
@@ -59,7 +59,7 @@ export default function CategoryCard({
           </div>
         </div>
 
-        <div className="flex gap-1 shrink-0 mt-1">
+        <div className="flex gap-1 shrink-0">
           <button
             onClick={() => onEdit(category)}
             className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground transition-colors"
@@ -83,10 +83,10 @@ export default function CategoryCard({
           {category.subcategories.map((sub) => (
             <div key={sub.id} className="bg-card border border-border/60 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-3">
-                <span className="font-mono text-[10px] text-muted-foreground/80 bg-muted px-1.5 py-0.5 rounded border border-border/50">
+                <span className="text-[10px] text-muted-foreground/80 bg-muted px-1.5 py-0.5 rounded border border-border/50">
                   {sub.no}
                 </span>
-                <span className="text-[13px] font-semibold text-foreground flex-1">
+                <span className="text-[13px] font-medium text-foreground flex-1">
                   {sub.name}
                 </span>
                 <div className="flex gap-1">
@@ -122,7 +122,7 @@ export default function CategoryCard({
                       key={item.id} 
                       className="group inline-flex items-center gap-1.5 bg-muted/40 hover:bg-muted border border-border/50 px-2.5 py-1 rounded-full transition-colors"
                     >
-                      <span className="font-mono text-[10px] text-muted-foreground/60">{item.no}</span>
+                      <span className="text-[10px] text-muted-foreground/60">{item.no}</span>
                       <span className="text-[11px] text-foreground/80">{item.name}</span>
                       <div className="flex items-center gap-0.5 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 

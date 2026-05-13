@@ -28,17 +28,24 @@ export default function ProjectLayout({ children }) {
     setIsSidebarOpen(false);
   }, [pathname]);
 
+  const isHubPage = pathname === `/project/${projectId}`;
+  const hideSidebar = isHubPage;
+
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-[242px] bg-[#09090b] border-r border-white/5 flex-col shrink-0 text-white">
-        <AppSidebar project={project} projectId={projectId} />
-      </aside>
+      {!hideSidebar && (
+        <aside className="hidden lg:flex w-[242px] bg-[#09090b] border-r border-white/5 flex-col shrink-0 text-white">
+          <AppSidebar project={project} projectId={projectId} />
+        </aside>
+      )}
 
       {/* Mobile Sidebar */}
-      <MobileSheet isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen}>
-        <AppSidebar project={project} projectId={projectId} />
-      </MobileSheet>
+      {!hideSidebar && (
+        <MobileSheet isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen}>
+          <AppSidebar project={project} projectId={projectId} />
+        </MobileSheet>
+      )}
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         {/* Mobile Header / Top Bar */}

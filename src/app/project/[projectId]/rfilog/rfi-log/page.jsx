@@ -30,6 +30,10 @@ import ClassifyModal from './components/ClassifyModal';
 import DisciplineModal from './components/DisciplineModal';
 import CorrectionModal from './components/CorrectionModal';
 import RFITable from './components/RFITable';
+import RFIViewerModal from '@/components/blocks/modals/RFIViewerModal';
+import SingleClassifyModal from './components/SingleClassifyModal';
+import ConfidenceBreakdown from './components/ConfidenceBreakdown';
+import CustomSelect from '@/components/ui/CustomSelect';
 
 const DEFAULT_DISC = ['Civil','MEP','Façade','Structure','Landscape','Architecture','Interior Design'];
 const SEVERITIES = ['Critical','High','Medium','Low'];
@@ -42,7 +46,7 @@ import PageHeader from '@/components/blocks/PageHeader';
 export default function RFILogPage() {
   const { projectId } = useParams();
   const router = useRouter();
-  const [data, setData] = useState({ rfis:[], total:0, unclassified_total:0 });
+  const [data, setData] = useState({ rfis:[], total:0, unclassified_total:0, metrics: null });
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [disc, setDisc] = useState('');
@@ -58,6 +62,8 @@ export default function RFILogPage() {
   const [categories, setCategories] = useState([]);
   const [confFilter, setConfFilter] = useState('');
   const [selectedIds, setSelectedIds] = useState(new Set());
+  const [viewingRFI, setViewingRFI] = useState(null);
+  const [singleClassify, setSingleClassify] = useState({ isVisible: false, status: 'idle', rfi: null });
 
   const load = useCallback(() => {
     getRFIs(projectId, { page, per_page:50, search, discipline:disc, status, conf_filter:confFilter })
@@ -74,20 +80,38 @@ export default function RFILogPage() {
 
   const classify = async (rfi) => {
     setClassifying(p => ({ ...p, [rfi.id]:true }));
+    setSingleClassify({ isVisible: true, status: 'retrieving', rfi });
     try {
+      setTimeout(() => setSingleClassify(p => ({ ...p, status: 'analyzing' })), 600);
       await classifyRFI(rfi.id);
+      setSingleClassify(p => ({ ...p, status: 'ensemble' }));
+      setTimeout(() => setSingleClassify(p => ({ ...p, status: 'saving' })), 500);
+      setTimeout(() => setSingleClassify(p => ({ ...p, status: 'done' })), 800);
       toast.success(`${rfi.rfi_ref} classified`);
       load();
-    } finally { setClassifying(p => ({ ...p, [rfi.id]:false })); }
+    } catch {
+      setSingleClassify({ isVisible: false, status: 'idle', rfi: null });
+    } finally { 
+      setClassifying(p => ({ ...p, [rfi.id]:false })); 
+    }
   };
 
   const reclassify = async (rfi) => {
     setClassifying(p => ({ ...p, [rfi.id]:'re' }));
+    setSingleClassify({ isVisible: true, status: 'retrieving', rfi });
     try {
+      setTimeout(() => setSingleClassify(p => ({ ...p, status: 'analyzing' })), 600);
       await reclassifyRFI(rfi.id);
+      setSingleClassify(p => ({ ...p, status: 'ensemble' }));
+      setTimeout(() => setSingleClassify(p => ({ ...p, status: 'saving' })), 500);
+      setTimeout(() => setSingleClassify(p => ({ ...p, status: 'done' })), 800);
       toast.success(`${rfi.rfi_ref} re-classified`);
       load();
-    } finally { setClassifying(p => ({ ...p, [rfi.id]:false })); }
+    } catch {
+      setSingleClassify({ isVisible: false, status: 'idle', rfi: null });
+    } finally { 
+      setClassifying(p => ({ ...p, [rfi.id]:false })); 
+    }
   };
 
   const bulkClassify = async () => {
@@ -188,7 +212,7 @@ export default function RFILogPage() {
         title="RFI Log"
         subtitle={
           <>
-            {data.total} total RFIs &bull; <span className="font-semibold text-amber-600">{unclassifiedCount} pending</span>
+            {data.total} total RFIs &bull; <span className="font-medium text-amber-600">{unclassifiedCount} pending</span>
           </>
         }
         actions={
@@ -213,6 +237,16 @@ export default function RFILogPage() {
         }
       />
 
+      <div className="px-4 md:px-12 pt-4">
+        <ConfidenceBreakdown 
+          highConf={data.metrics?.high || 0}
+          needsReview={(data.metrics?.medium || 0) + (data.metrics?.low || 0)}
+          lowConf={data.metrics?.low || 0}
+          total={data.metrics?.total || data.total || 0}
+          classified={data.metrics?.classified || 0}
+        />
+      </div>
+
       {/* Filter Bar */}
       <div className="px-4 md:px-12 py-3 border-b border-border bg-muted/10 flex flex-wrap items-center gap-2 md:gap-3 shrink-0">
         <div className="relative flex-1 min-w-[200px]">
@@ -225,35 +259,37 @@ export default function RFILogPage() {
           />
         </div>
         
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          <select 
-            className="flex-1 md:flex-none bg-card border border-border rounded-xl px-3 py-2 text-[11px] md:text-sm font-semibold text-foreground/80 outline-none transition-colors"
-            value={disc} 
-            onChange={e => { setDisc(e.target.value); setPage(1); }}
-          >
-            <option value="">All Disciplines</option>
-            {discList.map(d => <option key={d}>{d}</option>)}
-          </select>
+        <CustomSelect 
+          className="flex-1 md:flex-none"
+          options={[
+            { label: 'All Disciplines', value: '' },
+            ...discList.map(d => ({ label: d, value: d }))
+          ]}
+          value={disc}
+          onChange={setDisc}
+        />
 
+        <div className="flex items-center gap-2">
           <button 
             onClick={() => setShowDiscModal(true)}
-            className="p-2 border border-border rounded-xl bg-card hover:bg-muted/50 text-muted-foreground transition-all"
+            className="p-2.5 border border-border rounded-xl bg-card hover:bg-muted/50 text-muted-foreground transition-all"
           >
             <Settings2 className="w-4 h-4" />
           </button>
         </div>
 
-        <select 
-          className="w-full md:w-auto bg-card border border-border rounded-xl px-3 py-2 text-[11px] md:text-sm font-semibold text-foreground/80 outline-none transition-colors"
-          value={confFilter} 
-          onChange={e => { setConfFilter(e.target.value); setPage(1); }}
-        >
-          <option value="">All Confidence</option>
-          <option value="high">High (&ge;85%)</option>
-          <option value="medium">Medium (65-84%)</option>
-          <option value="low">Low (&lt;65%)</option>
-        </select>
-        <div className="hidden sm:block ml-auto text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">
+        <CustomSelect 
+          className="w-full md:w-auto"
+          options={[
+            { label: 'All Confidence', value: '' },
+            { label: 'High (≥85%)', value: 'high' },
+            { label: 'Medium (65-84%)', value: 'medium' },
+            { label: 'Low (<65%)', value: 'low' },
+          ]}
+          value={confFilter}
+          onChange={setConfFilter}
+        />
+        <div className="hidden sm:block ml-auto text-[13px] font-heading font-medium text-muted-foreground/50">
           {data.total} RFIs LOADED
         </div>
       </div>
@@ -269,13 +305,13 @@ export default function RFILogPage() {
               <button 
                 onClick={handleBatchReclassify} 
                 disabled={bulkRunning}
-                className="bg-white text-primary px-4 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-widest hover:opacity-90 disabled:opacity-50"
+                className="bg-white text-primary px-4 py-1.5 rounded-lg text-xs font-medium uppercase tracking-widest hover:opacity-90 disabled:opacity-50"
               >
                 Reclassify Selected
               </button>
               <button 
                 onClick={() => setSelectedIds(new Set())}
-                className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-80 hover:opacity-100"
+                className="text-[10px] font-medium uppercase tracking-[0.2em] opacity-80 hover:opacity-100"
               >
                 Clear selection
               </button>
@@ -286,6 +322,7 @@ export default function RFILogPage() {
             rfis={data.rfis}
             selected={selected}
             setSelected={setSelected}
+            onView={(rfi) => setViewingRFI(rfi)}
             selectedIds={selectedIds}
             toggleSelect={toggleSelect}
             toggleSelectAll={toggleSelectAll}
@@ -305,7 +342,7 @@ export default function RFILogPage() {
 
         {/* Pagination Footer */}
         <div className="absolute bottom-0 left-0 right-0 px-8 py-4 bg-card border-t border-border flex items-center justify-between shadow-[0_-4px_12px_rgba(0,0,0,0.02)]">
-          <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest">
+          <div className="text-[11px] font-heading font-medium text-muted-foreground uppercase tracking-widest">
             SHOWING {(page-1)*50+1}–{Math.min(page*50, data.total)} OF {data.total} RFIs
           </div>
           <div className="flex items-center gap-2">
@@ -325,7 +362,7 @@ export default function RFILogPage() {
                   <button 
                     key={pg} 
                     onClick={() => setPage(pg)}
-                    className={`w-9 h-9 rounded-xl text-xs font-semibold transition-all border ${
+                    className={`w-9 h-9 rounded-xl text-xs font-medium transition-all border ${
                       pg === page 
                         ? 'bg-foreground text-background border-foreground shadow-sm' 
                         : 'bg-card border-border hover:border-border/80 text-muted-foreground'
@@ -372,6 +409,18 @@ export default function RFILogPage() {
           onClose={() => setShowDiscModal(false)}
         />
       )}
+
+      <RFIViewerModal 
+        rfi={viewingRFI}
+        onDismiss={() => setViewingRFI(null)}
+      />
+
+      <SingleClassifyModal 
+        isVisible={singleClassify.isVisible}
+        status={singleClassify.status}
+        rfi={singleClassify.rfi}
+        onDismiss={() => setSingleClassify({ isVisible: false, status: 'idle', rfi: null })}
+      />
     </div>
   );
 }
