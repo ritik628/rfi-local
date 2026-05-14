@@ -5,7 +5,7 @@ import {
   X,
   FileText,
   Info,
-  Bot,
+  Cpu,
   MapPin,
   MessageSquare,
   AlertCircle,
@@ -103,6 +103,7 @@ export default function RFIViewerModal({ rfi, onDismiss }) {
               <DetailItem label="RFI Reference" value={rfi.rfi_ref} />
               <DetailItem label="Discipline" value={rfi.discipline} />
               <DetailItem label="Subject" value={rfi.subject} fullWidth />
+              <DetailItem label="Description" value={rfi.description} fullWidth />
             </div>
           </section>
 
@@ -110,7 +111,7 @@ export default function RFIViewerModal({ rfi, onDismiss }) {
           <section className="space-y-4">
             <div className="flex items-center justify-between px-1">
               <div className="flex items-center gap-2">
-                <Bot size={14} className="text-primary" />
+                <Cpu size={16} className="text-primary" />
                 <h3 className="text-[13px] font-medium text-foreground/60 uppercase tracking-wider">
                   AI Classification
                 </h3>

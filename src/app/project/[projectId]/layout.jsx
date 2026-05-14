@@ -28,8 +28,8 @@ export default function ProjectLayout({ children }) {
     setIsSidebarOpen(false);
   }, [pathname]);
 
-  const isHubPage = pathname === `/project/${projectId}`;
-  const hideSidebar = isHubPage;
+  const isRfiLogModule = pathname?.includes(`/project/${projectId}/rfilog/`);
+  const hideSidebar = !isRfiLogModule;
 
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden">

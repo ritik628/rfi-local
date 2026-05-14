@@ -118,26 +118,7 @@ export default function CorrectionModal({
                   }
                 />
               </div>
-              <div className="space-y-1.5">
-                <label className="text-[12px] font-medium text-muted-foreground/60 uppercase tracking-wider px-0.5">
-                  Adjust Severity
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {SEVERITIES.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setCorr((f) => ({ ...f, ai_severity: s }))}
-                      className={`py-2 rounded-lg text-[10px] font-medium uppercase tracking-wider border transition-all ${
-                        corr.ai_severity === s
-                          ? "bg-foreground text-background border-foreground shadow-sm"
-                          : "bg-card text-muted-foreground border-border hover:bg-muted"
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
+
               <div className="pt-2">
                 <div className="bg-amber-50/50 border border-amber-100 rounded-xl p-3.5 flex gap-3">
                   <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />

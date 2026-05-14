@@ -40,22 +40,6 @@ const FILE_TYPES = [
     pdf: false,
   },
   {
-    value: "design_defects",
-    label: "Design Defects Template",
-    icon: FileText,
-    desc: "Project XYZ Design Defects Analysis - output template",
-    multi: false,
-    pdf: false,
-  },
-  {
-    value: "categories",
-    label: "Categories File",
-    icon: Tag,
-    desc: "Categories taxonomy definition file",
-    multi: false,
-    pdf: false,
-  },
-  {
     value: "rfi_response_pdf",
     label: "Consultant Response PDFs",
     icon: FileUp,

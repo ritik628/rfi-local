@@ -15,7 +15,7 @@ export default function CategoryCard({
   onDeleteItem,
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const totalItems = category.subcategories.reduce((acc, sub) => acc + sub.items.length, 0);
+  const totalItems = category.subcategories?.reduce((acc, sub) => acc + (sub.items?.length || 0), 0) || 0;
 
   return (
     <div className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-sm transition-all h-fit">

@@ -348,32 +348,7 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-            <div className="card-base p-3 md:p-4 flex-1 overflow-hidden">
-              <div className="text-[12px] font-heading font-medium text-foreground uppercase tracking-wider mb-3">
-                By Severity
-              </div>
-              {sevData.length === 0 ? (
-                <div className="text-center py-5 text-muted-foreground text-[12px]">
-                  No classified RFIs
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  {sevData.map(({ name, value }) => (
-                    <div
-                      key={name}
-                      className="flex-1 min-w-[60px] md:min-w-[70px] p-2 text-center"
-                    >
-                      <div className="text-[20px] md:text-[24px] font-sans font-light text-foreground leading-none mb-1">
-                        {value}
-                      </div>
-                      <div className="text-[11px] font-heading font-normal text-muted-foreground uppercase tracking-widest">
-                        {name}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+
           </div>
         </div>
 

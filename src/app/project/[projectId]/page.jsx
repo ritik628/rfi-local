@@ -2,7 +2,14 @@
 
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { LayoutDashboard, FileText, Plus, Lock } from "lucide-react";
+import { 
+  BarChart3, 
+  FileSearch, 
+  ShieldCheck, 
+  Users, 
+  Layers,
+  Plus 
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function ProjectHubPage() {
@@ -14,42 +21,42 @@ export default function ProjectHubPage() {
     {
       id: "dashboard",
       title: "Main Dashboard",
-      description: "Overall project overview (Coming Soon)",
-      icon: <LayoutDashboard className="w-8 h-8 opacity-40" />,
-      path: `/project/${projectId}/dashboard/home`,
-      active: false,
+      description: "work in progress",
+      icon: <BarChart3 className="w-8 h-8" />,
+      path: `/project/${projectId}/dashboard`,
+      active: true,
     },
     {
       id: "rfi-log",
-      title: "RFI Log Module",
-      description: "Access the design defect analysis system",
-      icon: <FileText className="w-8 h-8" />,
+      title: "RFI Log",
+      description: "Pdf Consultant Classifier",
+      icon: <FileSearch className="w-8 h-8" />,
       path: `/project/${projectId}/rfilog/dashboard`,
       active: true,
     },
     {
-      id: "null-1",
-      title: "AI Agent",
-      description: "Automated defect analysis (Coming Soon)",
-      icon: <Lock className="w-8 h-8 opacity-20" />,
-      path: `/project/${projectId}/coming-soon`,
-      active: false,
+      id: "authority",
+      title: "Authority Comments",
+      description: "Own Setup of document uploaded, specifuc schema, Arabic to English, classify",
+      icon: <ShieldCheck className="w-8 h-8" />,
+      path: `/project/${projectId}/authority-comments`,
+      active: true,
     },
     {
-      id: "null-2",
-      title: "Categories",
-      description: "Classification schema (Coming Soon)",
-      icon: <Lock className="w-8 h-8 opacity-20" />,
-      path: `/project/${projectId}/coming-soon`,
-      active: false,
+      id: "community",
+      title: "Community Comments",
+      description: "work in progress",
+      icon: <Users className="w-8 h-8" />,
+      path: `/project/${projectId}/community-comments`,
+      active: true,
     },
     {
-      id: "null-3",
-      title: "Fine-tuning",
-      description: "Model customization (Coming Soon)",
-      icon: <Lock className="w-8 h-8 opacity-20" />,
-      path: `/project/${projectId}/coming-soon`,
-      active: false,
+      id: "variations",
+      title: "Design Variations",
+      description: "work in progress",
+      icon: <Layers className="w-8 h-8" />,
+      path: `/project/${projectId}/design-variations`,
+      active: true,
     },
     {
       id: "add",
@@ -65,7 +72,7 @@ export default function ProjectHubPage() {
     <div className="flex-1 flex flex-col items-center justify-center p-6 bg-background/50">
       <div className="max-w-5xl w-full">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-semibold text-foreground tracking-tight mb-2">
+          <h1 className="text-3xl font-medium text-foreground tracking-tight mb-2">
             Project Workspace
           </h1>
           <p className="text-muted-foreground font-medium">
@@ -94,10 +101,10 @@ export default function ProjectHubPage() {
                 {card.icon}
               </div>
               
-              <h3 className="text-lg font-semibold text-foreground mb-1">
+              <h3 className="text-xl font-medium text-foreground mb-1">
                 {card.title}
               </h3>
-              <p className="text-xs text-muted-foreground text-center line-clamp-2 max-w-[160px]">
+              <p className="text-sm font-normal text-muted-foreground text-center line-clamp-2 max-w-[160px]">
                 {card.description}
               </p>
 

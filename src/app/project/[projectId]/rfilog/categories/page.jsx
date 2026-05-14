@@ -142,7 +142,7 @@ export default function CategoriesPage() {
   };
 
   const totalItemsCount = cats.reduce(
-    (acc, cat) => acc + cat.subcategories.reduce((sAcc, sub) => sAcc + sub.items.length, 0), 
+    (acc, cat) => acc + (cat.subcategories?.reduce((sAcc, sub) => sAcc + (sub.items?.length || 0), 0) || 0), 
     0
   );
 
