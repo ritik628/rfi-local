@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import type { RFI } from "@/types";
 import { getRFIs } from "@/lib/api/api";
 import {
   BarChart,
@@ -35,9 +36,9 @@ import PageHeader from "@/components/blocks/PageHeader";
 
 export default function DashboardPage() {
   const params = useParams();
-  const projectId = params?.projectId;
+  const projectId = params?.projectId as string;
   const router = useRouter();
-  const [data, setData] = useState({ rfis: [], total: 0 });
+  const [data, setData] = useState<{ rfis: RFI[]; total: number }>({ rfis: [], total: 0 });
 
   useEffect(() => {
     if (projectId) {
@@ -55,7 +56,7 @@ export default function DashboardPage() {
   const lowConf = classified.filter((r) => (r.conf_overall || 0) < 65);
   const needsReview = classified.filter((r) => (r.conf_overall || 0) < 85);
 
-  const catMap = {};
+  const catMap: Record<string, number> = {};
   rfis.forEach((r) => {
     const category = r.human_design_defect || r.ai_design_defect;
     if (category) {
@@ -70,7 +71,7 @@ export default function DashboardPage() {
       count,
     }));
 
-  const discMap = {};
+  const discMap: Record<string, number> = {};
   rfis.forEach((r) => {
     if (r.discipline) discMap[r.discipline] = (discMap[r.discipline] || 0) + 1;
   });
@@ -79,7 +80,7 @@ export default function DashboardPage() {
     value,
   }));
 
-  const severityMap = {};
+  const severityMap: Record<string, number> = {};
   rfis.forEach((r) => {
     if (r.ai_severity)
       severityMap[r.ai_severity] = (severityMap[r.ai_severity] || 0) + 1;
@@ -237,7 +238,7 @@ export default function DashboardPage() {
                       fill="var(--muted)" 
                       radius={[0, 4, 4, 0]} 
                       barSize={14} 
-                      background={{ fill: 'var(--muted)', opacity: 0.1, radius: [0, 4, 4, 0] }}
+                      background={{ fill: 'var(--muted)', opacity: 0.1 }}
                     >
                       {catData.map((_, i) => (
                         <Cell key={i} fill={`var(--chart-${(i % 5) + 1})`} opacity={0.9} />

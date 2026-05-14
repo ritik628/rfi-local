@@ -1,9 +1,15 @@
 'use client';
 
+import React from 'react';
 import { ArrowLeft } from 'lucide-react';
-import SobhaLogo from '@/components/ui/SobhaLogo';
 
-export default function MobileSheet({ isOpen, setIsOpen, children }) {
+interface MobileSheetProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  children: React.ReactNode;
+}
+
+export default function MobileSheet({ isOpen, setIsOpen, children }: MobileSheetProps) {
   if (!isOpen) return null;
 
   return (

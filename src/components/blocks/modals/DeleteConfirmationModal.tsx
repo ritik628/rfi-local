@@ -1,5 +1,17 @@
 'use client';
 import { Trash2 } from 'lucide-react';
+import type { DeleteTarget } from '../../../types';
+
+interface DeleteConfirmationModalProps {
+  deleteTarget: DeleteTarget | null;
+  setDeleteTarget: (target: DeleteTarget | null) => void;
+  deleting: boolean;
+  deleteBy: string;
+  setDeleteBy: (value: string) => void;
+  deleteNotes: string;
+  setDeleteNotes: (value: string) => void;
+  confirmDelete: () => void;
+}
 
 export default function DeleteConfirmationModal({
   deleteTarget,
@@ -10,7 +22,7 @@ export default function DeleteConfirmationModal({
   deleteNotes,
   setDeleteNotes,
   confirmDelete
-}) {
+}: DeleteConfirmationModalProps) {
   if (!deleteTarget) return null;
 
   return (

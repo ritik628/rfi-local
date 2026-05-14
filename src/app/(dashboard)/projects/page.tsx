@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import type { Project, DeleteTarget } from "@/types";
 import { getProjects, createProject, deleteProject } from "@/lib/api/api";
 import toast from "react-hot-toast";
 import { Building, ClipboardList, LayoutGrid } from "lucide-react";
@@ -14,7 +15,7 @@ import MetricCard from "@/components/blocks/MetricCard";
 
 export default function ProjectsPage() {
   const router = useRouter();
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -23,8 +24,8 @@ export default function ProjectsPage() {
     consultant: "",
     contractor: "",
   });
-  const [step, setStep] = useState("idle"); // idle | creating | done
-  const [deleteTarget, setDeleteTarget] = useState(null); // {id, name, rfi_count}
+  const [step, setStep] = useState<"idle" | "creating" | "done">("idle");
+  const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
   const [deleteBy, setDeleteBy] = useState("");
   const [deleteNotes, setDeleteNotes] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -76,7 +77,7 @@ export default function ProjectsPage() {
     }
   };
 
-  const openDeleteModal = (e, p) => {
+  const openDeleteModal = (e: React.MouseEvent, p: Project) => {
     e.stopPropagation();
     setDeleteTarget({ id: p.id, name: p.name, rfi_count: p.rfi_count || 0 });
     setDeleteBy("");

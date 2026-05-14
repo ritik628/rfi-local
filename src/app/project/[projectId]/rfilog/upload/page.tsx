@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useDropzone } from "react-dropzone";
+import type { Project } from "@/types";
 import {
   uploadFile,
   getUploadedFiles,
@@ -86,28 +87,28 @@ const MISMATCH_LABELS = {
 import PageHeader from "@/components/blocks/PageHeader";
 
 export default function UploadPage() {
-  const { projectId } = useParams();
+  const { projectId } = useParams<{ projectId: string }>();
   const [fileType, setFileType] = useState("rfi_log");
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
 
   // PDF import state
-  const [pdfFiles, setPdfFiles] = useState([]);
+  const [pdfFiles, setPdfFiles] = useState<File[]>([]);
   const [importing, setImporting] = useState(false);
-  const [importProg, setImportProg] = useState(null);
-  const [importDone, setImportDone] = useState(null);
+  const [importProg, setImportProg] = useState<any>(null);
+  const [importDone, setImportDone] = useState<any>(null);
 
   // Blob URLs: filename → objectURL (for PDF preview)
-  const [pdfBlobUrls, setPdfBlobUrls] = useState({});
-  const blobUrlsRef = useRef({});
-  const importDoneRef = useRef(null);
+  const [pdfBlobUrls, setPdfBlobUrls] = useState<Record<string, string>>({});
+  const blobUrlsRef = useRef<Record<string, string>>({});
+  const importDoneRef = useRef<any>(null);
 
   // Preview navigation + tab
   const [previewIdx, setPreviewIdx] = useState(0);
   const [previewTab, setPreviewTab] = useState("pdf"); // 'pdf' | 'extracted'
 
   // Project info for mismatch comparison
-  const [projectInfo, setProjectInfo] = useState(null);
+  const [projectInfo, setProjectInfo] = useState<Project | null>(null);
 
   const selectedType = FILE_TYPES.find((ft) => ft.value === fileType);
   const isPdfMode = selectedType?.pdf;
@@ -172,13 +173,13 @@ export default function UploadPage() {
     };
   }, []);
 
-  const _createBlobUrl = (file) => {
+  const _createBlobUrl = (file: File) => {
     const url = URL.createObjectURL(file);
     blobUrlsRef.current[file.name] = url;
     return url;
   };
 
-  const _revokeBlobUrl = (filename) => {
+  const _revokeBlobUrl = (filename: string) => {
     if (blobUrlsRef.current[filename]) {
       URL.revokeObjectURL(blobUrlsRef.current[filename]);
       delete blobUrlsRef.current[filename];
@@ -197,7 +198,7 @@ export default function UploadPage() {
     setImporting(false);
   };
 
-  const removePdf = (idx, filename) => {
+  const removePdf = (idx: number, filename: string) => {
     _revokeBlobUrl(filename);
     setPdfBlobUrls((prev) => {
       const n = { ...prev };
@@ -207,10 +208,10 @@ export default function UploadPage() {
     setPdfFiles((prev) => prev.filter((_, j) => j !== idx));
   };
 
-  const handleDelete = async (fileId, filename) => {
+  const handleDelete = async (fileId: string, filename: string) => {
     if (!confirm(`Delete "${filename}" and all its extracted RFIs?`)) return;
     try {
-      const res = await deleteUploadedFile(fileId);
+      const res = await deleteUploadedFile(fileId) as any;
       toast.success(res.message || "File deleted");
       loadFiles();
     } catch {
@@ -218,7 +219,7 @@ export default function UploadPage() {
     }
   };
 
-  const handleFixMismatch = async (field, pdfValue) => {
+  const handleFixMismatch = async (field: keyof typeof MISMATCH_LABELS, pdfValue: string) => {
     try {
       await updateProject(projectId, { [field]: pdfValue });
       toast.success(`${MISMATCH_LABELS[field]} updated to "${pdfValue}"`);
@@ -235,15 +236,15 @@ export default function UploadPage() {
     }
   };
 
-  const handleIgnoreMismatch = (field) => {
-    setImportDone((prev) => ({
+  const handleIgnoreMismatch = (field: string) => {
+    setImportDone((prev: any) => ({
       ...prev,
       metadata_mismatches: { ...prev.metadata_mismatches, [field]: undefined },
     }));
   };
 
   const onDropExcel = useCallback(
-    async (accepted) => {
+    async (accepted: File[]) => {
       const file = accepted[0];
       if (!file) return;
       if (!file.name.match(/\.(xlsx|xls)$/i)) {
@@ -261,7 +262,7 @@ export default function UploadPage() {
     [projectId, fileType, loadFiles],
   );
 
-  const onDropPdf = useCallback((accepted) => {
+  const onDropPdf = useCallback((accepted: File[]) => {
     const pdfs = accepted.filter((f) => f.name.toLowerCase().endsWith(".pdf"));
     if (!pdfs.length)
       return toast.error("Only PDF files are supported for this type");
@@ -864,7 +865,7 @@ export default function UploadPage() {
                                           </button>
                                           <button
                                             onClick={() =>
-                                              handleFixMismatch(field, val)
+                                              handleFixMismatch(field as any, val as string)
                                             }
                                             className="text-[10px] font-bold text-amber-600 hover:text-amber-700 underline"
                                           >
@@ -889,7 +890,7 @@ export default function UploadPage() {
                                             Detected
                                           </div>
                                           <div className="font-bold text-amber-900 truncate">
-                                            {val}
+                                            {val as string}
                                           </div>
                                         </div>
                                       </div>

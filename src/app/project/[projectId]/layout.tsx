@@ -2,17 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { usePathname, useParams } from "next/navigation";
+import type { Project } from "@/types";
 import { getProjects } from "@/lib/api/api";
 import SobhaLogo from "@/components/ui/SobhaLogo";
 import AppSidebar from "@/components/layout/AppSidebar";
 import MobileSheet from "@/components/layout/MobileSheet";
 
-export default function ProjectLayout({ children }) {
+export default function ProjectLayout({ children }: { children: React.ReactNode }) {
   const params = useParams();
-  const projectId = params?.projectId;
+  const projectId = params?.projectId as string;
   const pathname = usePathname();
 
-  const [project, setProject] = useState(null);
+  const [project, setProject] = useState<Project | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {

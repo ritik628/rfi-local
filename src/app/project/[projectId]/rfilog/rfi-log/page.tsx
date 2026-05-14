@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import type { RFI, RFIListResponse, ClassifyProgress, CorrectionPayload, Category, Discipline, SingleClassifyState } from '@/types';
 import { 
   getRFIs, 
   classifyRFI, 
@@ -16,6 +17,7 @@ import {
   getDisciplines,
   addDiscipline,
   deleteDiscipline,
+  exportExcel,
 } from '@/lib/api/api';
 import toast from 'react-hot-toast';
 import { 
@@ -44,30 +46,30 @@ const SEV_BORDER = { Critical:'border-rose-200 dark:border-rose-900/50', High:'b
 import PageHeader from '@/components/blocks/PageHeader';
 
 export default function RFILogPage() {
-  const { projectId } = useParams();
+  const { projectId } = useParams<{ projectId: string }>();
   const router = useRouter();
-  const [data, setData] = useState({ rfis:[], total:0, unclassified_total:0, metrics: null });
+  const [data, setData] = useState<RFIListResponse>({ rfis:[], total:0, unclassified_total:0, metrics: null });
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [disc, setDisc] = useState('');
   const [status, setStatus] = useState('');
-  const [selected, setSelected] = useState(null);
-  const [classifying, setClassifying] = useState({});
+  const [selected, setSelected] = useState<RFI | null>(null);
+  const [classifying, setClassifying] = useState<Record<string, boolean | string>>({});
   const [bulkRunning, setBulkRunning] = useState(false);
-  const [progress, setProgress] = useState(null);
-  const [correcting, setCorrecting] = useState(null);
-  const [corr, setCorr] = useState({});
-  const [disciplines, setDisciplines] = useState([]);
+  const [progress, setProgress] = useState<ClassifyProgress | null>(null);
+  const [correcting, setCorrecting] = useState<RFI | null>(null);
+  const [corr, setCorr] = useState<CorrectionPayload>({});
+  const [disciplines, setDisciplines] = useState<Discipline[]>([]);
   const [showDiscModal, setShowDiscModal] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [confFilter, setConfFilter] = useState('');
-  const [selectedIds, setSelectedIds] = useState(new Set());
-  const [viewingRFI, setViewingRFI] = useState(null);
-  const [singleClassify, setSingleClassify] = useState({ isVisible: false, status: 'idle', rfi: null });
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [viewingRFI, setViewingRFI] = useState<RFI | null>(null);
+  const [singleClassify, setSingleClassify] = useState<SingleClassifyState>({ isVisible: false, status: 'idle', rfi: null });
 
   const load = useCallback(() => {
     getRFIs(projectId, { page, per_page:50, search, discipline:disc, status, conf_filter:confFilter })
-      .then(d => { setData(d); setSelectedIds(new Set()); })
+      .then((d: RFIListResponse) => { setData(d); setSelectedIds(new Set()); })
       .catch(() => {});
   }, [projectId, page, search, disc, status, confFilter]);
 
@@ -78,7 +80,7 @@ export default function RFILogPage() {
     getCategories().then(setCategories).catch(() => {});
   }, [projectId]);
 
-  const classify = async (rfi) => {
+  const classify = async (rfi: RFI) => {
     setClassifying(p => ({ ...p, [rfi.id]:true }));
     setSingleClassify({ isVisible: true, status: 'retrieving', rfi });
     try {
@@ -96,7 +98,7 @@ export default function RFILogPage() {
     }
   };
 
-  const reclassify = async (rfi) => {
+  const reclassify = async (rfi: RFI) => {
     setClassifying(p => ({ ...p, [rfi.id]:'re' }));
     setSingleClassify({ isVisible: true, status: 'retrieving', rfi });
     try {
@@ -140,7 +142,7 @@ export default function RFILogPage() {
     }
   };
 
-  const toggleSelect = (id) => setSelectedIds(prev => {
+  const toggleSelect = (id: string) => setSelectedIds(prev => {
     const next = new Set(prev);
     next.has(id) ? next.delete(id) : next.add(id);
     return next;
@@ -157,7 +159,7 @@ export default function RFILogPage() {
   const handleBatchReclassify = async () => {
     if (selectedIds.size === 0) return;
     setBulkRunning(true);
-    const ids = [...selectedIds];
+    const ids = [...selectedIds] as string[];
     setProgress({ status:'queued', total: ids.length, done:0, current:'' });
     try {
       const r = await reclassifyBatch(projectId, ids);

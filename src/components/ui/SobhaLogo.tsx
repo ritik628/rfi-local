@@ -1,6 +1,10 @@
 import { Hexagon } from 'lucide-react';
 
-export default function SobhaLogo({ size = 46 }) {
+interface SobhaLogoProps {
+  size?: number;
+}
+
+export default function SobhaLogo({ size = 46 }: SobhaLogoProps) {
   const r = Math.round(size * 0.2);
   
   return (

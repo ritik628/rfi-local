@@ -1,5 +1,17 @@
 'use client';
 
+import React from 'react';
+import type { ProjectFormData } from '../../../types';
+
+interface CreateProjectModalProps {
+  showModal: boolean;
+  setShowModal: (show: boolean) => void;
+  step: 'idle' | 'creating' | 'done';
+  form: ProjectFormData;
+  setForm: React.Dispatch<React.SetStateAction<ProjectFormData>>;
+  handleCreate: () => void;
+}
+
 export default function CreateProjectModal({ 
   showModal, 
   setShowModal, 
@@ -7,7 +19,7 @@ export default function CreateProjectModal({
   form, 
   setForm, 
   handleCreate 
-}) {
+}: CreateProjectModalProps) {
   if (!showModal) return null;
 
   return (
@@ -59,13 +71,13 @@ export default function CreateProjectModal({
             </div>
 
             <div className="flex flex-col gap-3.5">
-              {[
+              {([
                 ['Project Name *', 'name',        'e.g. S-Tower Phase 2', true],
                 ['Description',    'description', 'Brief project overview'],
                 ['Client',         'client',      'e.g. Sobha Gold FZ LLC'],
                 ['Consultant',     'consultant',  'e.g. PNC Architects'],
                 ['Contractor',     'contractor',  'e.g. Sobha Constructions'],
-              ].map(([label, key, ph, req]) => (
+              ] as const).map(([label, key, ph, req]) => (
                 <div key={key}>
                   <label className="block text-[13px] font-medium text-muted-foreground mb-2">{label}</label>
                   <input

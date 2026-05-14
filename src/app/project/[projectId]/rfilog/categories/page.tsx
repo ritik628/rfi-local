@@ -9,6 +9,7 @@ import {
 } from "@/lib/api/api";
 import toast from "react-hot-toast";
 import { Info } from "lucide-react";
+import type { Category, Subcategory, CategoryItem } from "@/types";
 import PageHeader from "@/components/blocks/PageHeader";
 import CategoryCard from "./components/CategoryCard";
 import CategoryModal from "./components/CategoryModal";
@@ -16,25 +17,25 @@ import { Plus } from "lucide-react";
 
 export default function CategoriesPage() {
   const params = useParams();
-  const [cats, setCats] = useState([]);
+  const [cats, setCats] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [modal, setModal] = useState(null);
-  const [form, setForm] = useState({});
+  const [modal, setModal] = useState<{ type: string; data: any } | null>(null);
+  const [form, setForm] = useState<any>({});
 
   const loadData = async () => {
     try {
       const data = await getCategories();
       
       // Deep sort: Categories -> Subcategories -> Items
-      const sorted = [...data].sort((a, b) => (parseFloat(a.no) || 0) - (parseFloat(b.no) || 0));
+      const sorted = [...data].sort((a: any, b: any) => (parseFloat(a.no) || 0) - (parseFloat(b.no) || 0));
       
-      sorted.forEach(cat => {
+      sorted.forEach((cat: any) => {
         if (cat.subcategories) {
-          cat.subcategories.sort((a, b) => (parseFloat(a.no) || 0) - (parseFloat(b.no) || 0));
-          cat.subcategories.forEach(sub => {
+          cat.subcategories.sort((a: any, b: any) => (parseFloat(a.no) || 0) - (parseFloat(b.no) || 0));
+          cat.subcategories.forEach((sub: any) => {
             if (sub.items) {
-              sub.items.sort((a, b) => (parseFloat(a.no) || 0) - (parseFloat(b.no) || 0));
+              sub.items.sort((a: any, b: any) => (parseFloat(a.no) || 0) - (parseFloat(b.no) || 0));
             }
           });
         }
@@ -53,7 +54,7 @@ export default function CategoriesPage() {
     loadData();
   }, []);
 
-  const openModal = (type, data = {}) => {
+  const openModal = (type: string, data: any = {}) => {
     setModal({ type, data });
     setForm({ ...data });
   };
@@ -78,27 +79,27 @@ export default function CategoriesPage() {
           name: form.name, 
           description: form.description || "", 
           added_by: form.added_by || "" 
-        });
+        } as any);
         toast.success("Category added");
       } else if (type === "editCat") {
         await updateCategory(data.id, { 
           no: form.no, 
           name: form.name, 
           description: form.description 
-        });
+        } as any);
         toast.success("Category updated");
       } else if (type === "addSub") {
         await addSubcategory({ 
           no: form.no, 
           name: form.name, 
           category_id: data.id 
-        });
+        } as any);
         toast.success("Subcategory added");
       } else if (type === "editSub") {
         await updateSubcategory(data.id, { 
           no: form.no, 
           name: form.name 
-        });
+        } as any);
         toast.success("Subcategory updated");
       } else if (type === "addItem") {
         await addItem({ 
@@ -106,13 +107,13 @@ export default function CategoriesPage() {
           name: form.name, 
           subcategory_id: data.id, 
           added_by: form.added_by || "" 
-        });
+        } as any);
         toast.success("Item added");
       } else if (type === "editItem") {
         await updateItem(data.id, { 
           no: form.no, 
           name: form.name 
-        });
+        } as any);
         toast.success("Item updated");
       }
       
@@ -126,7 +127,7 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleDelete = async (type, id, label) => {
+  const handleDelete = async (type: string, id: string, label: string) => {
     if (!confirm(`Are you sure you want to delete "${label}"?`)) return;
     
     try {

@@ -2,6 +2,16 @@
 
 import React from "react";
 
+interface MetricCardProps {
+  label: string;
+  value: string | number;
+  sub?: string;
+  icon?: React.ReactElement;
+  accentColor?: string;
+  onClick?: () => void;
+  className?: string;
+}
+
 /**
  * MetricCard component for displaying key performance indicators.
  * Optimized for space by using a horizontal layout to avoid empty white space on the right.
@@ -14,7 +24,7 @@ export default function MetricCard({
   accentColor, 
   onClick,
   className = ""
-}) {
+}: MetricCardProps) {
   return (
     <div 
       className={`card-base p-5 md:p-6 flex items-center justify-between ${className}`}
@@ -42,7 +52,7 @@ export default function MetricCard({
 
       {icon && (
         <div className="text-muted-foreground shrink-0">
-          {React.isValidElement(icon) ? React.cloneElement(icon, { size: 24, strokeWidth: 1.5 }) : icon}
+          {React.isValidElement(icon) ? React.cloneElement(icon as React.ReactElement<any>, { size: 24, strokeWidth: 1.5 }) : icon}
         </div>
       )}
     </div>

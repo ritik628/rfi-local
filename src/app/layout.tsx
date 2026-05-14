@@ -19,7 +19,7 @@ export const metadata = {
   description: 'Sobha Design Defect Analysis · Azure OpenAI GPT-4o',
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <body className="antialiased min-h-screen flex flex-col bg-background text-foreground font-sans">

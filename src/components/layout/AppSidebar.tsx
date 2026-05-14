@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import SobhaLogo from '@/components/ui/SobhaLogo';
+import SobhaLogo from '../../components/ui/SobhaLogo';
+import type { Project } from '../../types';
 import {
   LayoutDashboard,
   Upload,
@@ -46,7 +47,12 @@ const NAV = [
   },
 ];
 
-export default function AppSidebar({ project, projectId }) {
+interface AppSidebarProps {
+  project: Project | null;
+  projectId: string;
+}
+
+export default function AppSidebar({ project, projectId }: AppSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 

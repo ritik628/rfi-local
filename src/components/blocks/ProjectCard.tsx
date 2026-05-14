@@ -1,7 +1,14 @@
+import React from "react";
 import { Building2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import type { Project } from "@/types";
 
-export default function ProjectCard({ project, onDeleteClick }) {
+interface ProjectCardProps {
+  project: Project;
+  onDeleteClick: (e: React.MouseEvent, project: Project) => void;
+}
+
+export default function ProjectCard({ project, onDeleteClick }: ProjectCardProps) {
   const router = useRouter();
 
   return (

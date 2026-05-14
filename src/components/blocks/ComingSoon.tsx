@@ -4,7 +4,11 @@ import React from "react";
 import { Hammer, Sparkles, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function ComingSoon({ title = "Module Under Construction" }) {
+interface ComingSoonProps {
+  title?: string;
+}
+
+export default function ComingSoon({ title = "Module Under Construction" }: ComingSoonProps) {
   const router = useRouter();
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import type { RFI } from "../../../types";
 import {
   X,
   FileText,
@@ -11,19 +12,36 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-export default function RFIViewerModal({ rfi, onDismiss }) {
+interface RFIViewerModalProps {
+  rfi: RFI | null;
+  onDismiss: () => void;
+}
+
+interface ConfidenceBadgeProps {
+  value: number;
+}
+
+interface DetailItemProps {
+  label: string;
+  value?: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  fullWidth?: boolean;
+  conf?: number;
+}
+
+export default function RFIViewerModal({ rfi, onDismiss }: RFIViewerModalProps) {
   if (!rfi) return null;
 
   const rawConf = rfi.conf_overall || 0;
   const overall = Math.round(rawConf > 1 ? rawConf : rawConf * 100);
 
-  const getConfColor = (val) => {
+  const getConfColor = (val: number): string => {
     if (val >= 85) return "text-emerald-600 bg-emerald-50 border-emerald-100";
     if (val >= 65) return "text-amber-600 bg-amber-50 border-amber-100";
     return "text-rose-600 bg-rose-50 border-rose-100";
   };
 
-  const ConfidenceBadge = ({ value }) => {
+  const ConfidenceBadge = ({ value }: ConfidenceBadgeProps) => {
     const val = Math.round(value > 1 ? value : value * 100);
     const color =
       val >= 85
@@ -46,7 +64,7 @@ export default function RFIViewerModal({ rfi, onDismiss }) {
     icon: Icon,
     fullWidth = false,
     conf,
-  }) => (
+  }: DetailItemProps) => (
     <div
       className={`${fullWidth ? "col-span-full" : "col-span-1"} flex flex-col gap-1.5`}
     >

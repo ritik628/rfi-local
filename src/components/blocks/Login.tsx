@@ -5,14 +5,18 @@ import { Loader2, Sparkles } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 // Mocking next-auth for UI-only demonstration as requested
-const signIn = async (provider, options) => {
+const signIn = async (provider: string, options?: Record<string, string>) => {
   console.log(`Signing in with ${provider}`, options);
   return new Promise((resolve) => setTimeout(resolve, 1000));
 };
 
 import SobhaLogo from "@/components/ui/SobhaLogo";
 
-function LoginErrorHandler({ setLoginError }) {
+interface LoginErrorHandlerProps {
+  setLoginError: (error: string | null) => void;
+}
+
+function LoginErrorHandler({ setLoginError }: LoginErrorHandlerProps) {
   const searchParams = useSearchParams();
 
   React.useEffect(() => {
@@ -27,13 +31,22 @@ function LoginErrorHandler({ setLoginError }) {
   return null;
 }
 
+interface LoginProps {
+  heading?: string;
+  logo?: {
+    url?: string;
+    src?: string;
+    alt?: string;
+  };
+}
+
 const Login = ({
   heading = "Login",
   logo,
-}) => {
+}: LoginProps) => {
   const router = useRouter();
-  const [loginError, setLoginError] = React.useState(null);
-  const [loadingMode, setLoadingMode] = React.useState(null);
+  const [loginError, setLoginError] = React.useState<string | null>(null);
+  const [loadingMode, setLoadingMode] = React.useState<string | null>(null);
   const isLoading = loadingMode !== null;
 
   const handleMicrosoftSignIn = () => {

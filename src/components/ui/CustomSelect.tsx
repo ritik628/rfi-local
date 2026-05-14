@@ -3,6 +3,22 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 
+interface SelectOption {
+  label: string;
+  value: string;
+}
+
+interface CustomSelectProps {
+  options?: (string | SelectOption)[];
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
+  labelPrefix?: string;
+  variant?: 'default' | 'minimal';
+  triggerClassName?: string;
+}
+
 export default function CustomSelect({ 
   options = [], 
   value, 
@@ -10,15 +26,15 @@ export default function CustomSelect({
   placeholder = 'Select option',
   className = '',
   labelPrefix = '',
-  variant = 'default', // 'default' or 'minimal'
+  variant = 'default',
   triggerClassName = ''
-}) {
+}: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -34,7 +50,7 @@ export default function CustomSelect({
     ? (typeof selectedOption === 'string' ? selectedOption : selectedOption.label)
     : placeholder;
 
-  const handleSelect = (val) => {
+  const handleSelect = (val: string) => {
     onChange(val);
     setIsOpen(false);
   };
@@ -60,7 +76,6 @@ export default function CustomSelect({
       {isOpen && (
         <div className="absolute top-[calc(100%+4px)] left-0 z-[110] bg-card border border-border rounded-xl shadow-xl py-1 min-w-[160px] animate-in fade-in zoom-in-95 duration-150">
           <div className="max-h-[280px] overflow-y-auto scrollbar-themed">
-            {/* Placeholder / Clear Option if needed could go here */}
             {options.map((opt, i) => {
               const optVal = typeof opt === 'string' ? opt : opt.value;
               const optLabel = typeof opt === 'string' ? opt : opt.label;

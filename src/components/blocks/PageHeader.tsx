@@ -2,6 +2,15 @@
 
 import React from "react";
 
+interface PageHeaderProps {
+  title: string;
+  subtitle?: React.ReactNode;
+  actions?: React.ReactNode;
+  icon?: React.ReactNode;
+  badge?: React.ReactNode;
+  className?: string;
+}
+
 export default function PageHeader({ 
   title, 
   subtitle, 
@@ -9,7 +18,7 @@ export default function PageHeader({
   icon, 
   badge,
   className = "" 
-}) {
+}: PageHeaderProps) {
   return (
     <header className={`bg-card border-b border-border p-3 md:p-[12px_48px] flex items-center justify-between shrink-0 ${className}`}>
       <div className="flex items-center gap-3 min-w-0">
